@@ -1,6 +1,6 @@
-{:host "imap.host.here"
- :port 993
- :username "username"
- :password "password"
- :to "to@email.com"
- :from "RSS <rss@bot.com>"}
+{:host "imap.host.here"     ; imap host
+ :port 993                  ; imap port
+ :username "username"       ; imap username
+ :password "password"       ; imap password
+ :to "to@email.com"         ; address to put in to the "to" email field
+ :from "RSS <rss@bot.com>"} ; address to put in to the "from" email field
