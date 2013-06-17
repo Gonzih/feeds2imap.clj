@@ -10,6 +10,7 @@
 
 (defn create [store folder]
   (when-not (exists store folder)
+    (info "Creating IMAP folder" folder)
     (.create (get-folder store folder) Folder/HOLDS_MESSAGES)))
 
 (defn append [store folder messages]
@@ -21,6 +22,6 @@
     (pmap (fn [[folder emails]]
             (let [folder-str (str "RSS2/" (name folder))]
               (create store folder-str)
-              (info "Appending" (count emails) "emails in to the folder" folder-str)
+              (info "Appending" (count emails) "emails in to the IMAP folder" folder-str)
               (append store folder-str emails)))
           emails)))
