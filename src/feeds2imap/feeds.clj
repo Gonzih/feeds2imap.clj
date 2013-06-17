@@ -74,7 +74,8 @@
         content (-> item :contents first :value)
         html (html [:table
                      [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
-                             [:tr [:td authors [:hr]]]
+                             (when (seq authors)
+                               [:tr [:td authors [:hr]]])
                              [:tr [:td content]]]])]
     {:from from :to to :subject title :html html}))
 
