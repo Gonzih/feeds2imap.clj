@@ -20,7 +20,7 @@
 (defn append-emails [store emails]
   (doall
     (pmap (fn [[folder emails]]
-            (let [folder-str (str "RSS2/" (name folder))]
+            (let [folder-str (str "RSS/" (name folder))]
               (create store folder-str)
               (info "Appending" (count emails) "emails in to the IMAP folder" folder-str)
               (append store folder-str emails)))
