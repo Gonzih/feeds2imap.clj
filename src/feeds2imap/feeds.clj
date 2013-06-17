@@ -2,6 +2,7 @@
   (:require [hiccup.core :refer :all]
             [feedparser-clj.core :refer :all]
             [feeds2imap.message :as message]
+            [clojure.string :as s]
             [clojure.pprint :refer :all]))
 
 (defn ^:private map-items
@@ -17,7 +18,7 @@
        (map (fn [[folder items]]
               [folder (filter fun items)]))
        (filter (fn [[folder items]]
-                 (not (empty? items))))))
+                 (seq items)))))
 
 (defn ^:private flattern-items [items]
   (map (fn [[folder emails]]
@@ -25,12 +26,12 @@
        items))
 
 (defn ^:private item-authors [{:keys [authors]}]
-  (apply str (map (fn [author]
-                    (str (:name author)
-                         " | "
-                         (:email  author)
-                         " | "
-                         (:uri   author))) authors)))
+  (s/join (map (fn [author]
+                 (str (:name author)
+                      " | "
+                      (:email  author)
+                      " | "
+                      (:uri   author))) authors)))
 
 (defn ^:private digest
   "Generates unique digest for item."
@@ -71,8 +72,7 @@
 (defn to-emails
   "Convert items to Messages."
   [session from to items]
-  (->> items
-       (map-items (partial items-to-emails session from to))))
+  (map-items (partial items-to-emails session from to) items))
 
 (defn new-items [cache urls]
   (->> urls

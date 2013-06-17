@@ -2,17 +2,14 @@
   (:import [javax.mail Folder Message]))
 
 (defn get-folder [store folder]
-  (-> store
-      (.getFolder folder)))
+  (.getFolder store folder))
 
 (defn exists [store folder]
-  (-> (get-folder store folder)
-      .exists))
+  (.exists (get-folder store folder)))
 
 (defn create [store folder]
   (when-not (exists store folder)
-    (-> (get-folder store folder)
-        (.create Folder/HOLDS_MESSAGES))))
+    (.create (get-folder store folder) Folder/HOLDS_MESSAGES)))
 
 (defn append [store folder messages]
   (.appendMessages (get-folder store folder)
