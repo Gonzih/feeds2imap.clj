@@ -12,6 +12,11 @@
   [fun coll]
   (map (fn [[folder items]] [folder (map fun items)]) coll))
 
+(defn ^:private pmap-items
+  "Map function over items for each folder using pmap."
+  [fun coll]
+  (pmap (fn [[folder items]] [folder (pmap fun items)]) coll))
+
 (defn ^:private filter-items
   "Filter items for each folder.
    Filter folders with non empty items collection."
@@ -81,9 +86,13 @@
   [session from to items]
   (map-items (partial items-to-emails session from to) items))
 
+(defn parse [url]
+  (info "Fetching data from" url)
+  (parse-feed url))
+
 (defn new-items [cache urls]
   (->> urls
-       (map-items parse-feed)
+       (pmap-items parse)
        (map-items :entries)
        (flattern-items)
        (filter-items (partial new? cache))))
