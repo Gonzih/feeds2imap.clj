@@ -3,7 +3,9 @@
             [feedparser-clj.core :refer :all]
             [feeds2imap.message :as message]
             [clojure.string :as s]
-            [clojure.pprint :refer :all]))
+            [clojure.pprint :refer :all]
+            [clojure.tools.logging :refer [info error]])
+  (:import  [java.security MessageDigest]))
 
 (defn ^:private map-items
   "Map function over items for each folder."
@@ -33,10 +35,15 @@
                       " | "
                       (:uri   author))) authors)))
 
+(defn md5 [string]
+  {:pre [(string? string)]}
+  (let [md (MessageDigest/getInstance "MD5")]
+    (.toString  (BigInteger. 1 (.digest md  (.getBytes string "UTF-8"))) 16)))
+
 (defn ^:private digest
   "Generates unique digest for item."
   [{:keys [title link] :as item}]
-  (hash (str title link (item-authors item))))
+  (md5 (str title link (item-authors item))))
 
 (defn ^:private new?
   "Looks up item in the cache"

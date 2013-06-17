@@ -1,5 +1,6 @@
 (ns feeds2imap.folder
-  (:import [javax.mail Folder Message]))
+  (:require [clojure.tools.logging :refer [info error]])
+  (:import  [javax.mail Folder Message]))
 
 (defn get-folder [store folder]
   (.getFolder store folder))
@@ -20,5 +21,6 @@
     (map (fn [[folder emails]]
            (let [folder-str (str "RSS2/" (name folder))]
              (create store folder-str)
+             (info "Appending" (count emails) "emails in to the folder" folder-str)
              (append store folder-str emails)))
          emails)))
