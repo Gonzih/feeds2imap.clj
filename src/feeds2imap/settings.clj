@@ -1,6 +1,7 @@
 (ns feeds2imap.settings
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.tools.logging :refer [info error]])
   (:import  [java.io File]))
 
 (defn ^:private config-dir []
@@ -31,6 +32,7 @@
   (read-or-create-file "read-items.clj" (hash-set)))
 
 (defn write-items [data]
+  (info "Writing" (count data) "items to cache.")
   (write-file "read-items.clj" data))
 
 (defn imap []
