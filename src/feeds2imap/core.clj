@@ -19,4 +19,5 @@
       (settings/write-items (feeds/mark-all-as-read cache new-items)))))
 
 (defn -main [& x]
-  (time (pull)))
+  (time (pull))
+  (shutdown-agents))
