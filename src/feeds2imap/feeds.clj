@@ -5,7 +5,8 @@
             [clojure.string :as s]
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]])
-  (:import  [java.security MessageDigest]))
+  (:import  [java.security MessageDigest]
+            [java.net NoRouteToHostException]))
 
 (defn ^:private map-items
   "Map function over items for each folder."
@@ -88,8 +89,14 @@
   (map-items (partial items-to-emails session from to) items))
 
 (defn parse [url]
-  (info "Fetching data from" url)
-  (parse-feed url))
+  (letfn [(parse-try [url n-try]
+            (info "Fetching data from" url "try n" n-try)
+            (try
+              (if (< n-try 10)
+                (parse-feed url)
+                {:entries ()})
+              (catch NoRouteToHostException _ (parse-try url (inc n-try)))))]
+    (parse-try url 1)))
 
 (defn new-items [cache urls]
   (->> urls
