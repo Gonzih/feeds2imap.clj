@@ -3,7 +3,8 @@
   (:require [feeds2imap.feeds :as feeds]
             [feeds2imap.settings :as settings]
             [feeds2imap.imap :as imap]
-            [feeds2imap.folder :as folder]))
+            [feeds2imap.folder :as folder]
+            [clojure.pprint :refer [pprint]]))
 
 (defn pull []
   (let [{:keys [username password host port to from]} (settings/imap)
@@ -18,6 +19,33 @@
       (folder/append-emails store emails)
       (settings/write-items (feeds/mark-all-as-read cache new-items)))))
 
-(defn -main [& x]
+(defn sleep [ms]
+  (Thread/sleep ms))
+
+(defn auto []
   (time (pull))
-  (shutdown-agents))
+  (sleep (* 60 60 1000))
+  (recur))
+
+(defn add [folder url]
+  (let [folder (keyword folder)
+        urls (settings/urls)
+        folder-urls (or (get urls folder) [])]
+    (settings/urls (assoc urls folder (conj folder-urls url)))))
+
+(defn show [] (pprint (settings/urls)))
+
+(defn -main
+  ([]
+    (time (pull))
+    (shutdown-agents))
+  ([command]
+    (case command
+          "auto" (auto)
+          "show" (show)
+          "pull" (time (pull)))
+    (shutdown-agents))
+  ([command arg1 arg2]
+    (case command
+          "add" (do (add arg1 arg2) (show)))
+    (shutdown-agents)))

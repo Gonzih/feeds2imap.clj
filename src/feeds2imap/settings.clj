@@ -38,5 +38,6 @@
 (defn imap []
   (read-or-create-file "imap.clj" (hash-map)))
 
-(defn urls []
-  (read-or-create-file "urls.clj" (hash-map)))
+(defn urls
+  ([] (read-or-create-file "urls.clj" (hash-map)))
+  ([data] (write-file "urls.clj" data)))
