@@ -9,10 +9,15 @@ By default configuration dir is `$HOME/.config/feeds2imap.clj`.
 Only file than required to run code is imap.clj. Take a look at imap.clj.example file for details.
 
 ### Usage
+You can use `lein run` to run programm or you can generate jar with `lein uberjar` and run programm with `java -jar <path-to-jar>`.
 
-`lein run` - to pull new items.
+* `LAUNCH-COMMAND` - pull new items.
+* `LAUNCH-COMMAND pull` - pull new items.
+* `LAUNCH-COMMAND auto` - pull new items every 1 hour in the loop.
+* `LAUNCH-COMMAND show` - show feeds list (url.clj file content).
+* `LAUNCH-COMMAND add folder-name feed-url` - add url to feeds file to the folder folder-name.
 
-Or you can generate jar with `lein uberjar` and run programm with `java -jar <path-to-jar>`.
+where `LAUNCH-COMMAND = lein run / java -jar jarfile.jar`.
 
 ### License
 
