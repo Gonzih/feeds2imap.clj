@@ -16,7 +16,7 @@ Or you can generate jar with `lein uberjar` and run programm with `java -jar <pa
 
 ### License
 
-Copyright © 2013 Max Gonzih <gonzih at gmail.com>
+Copyright © 2013 Max Gonzih gonzih at gmail.com
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
