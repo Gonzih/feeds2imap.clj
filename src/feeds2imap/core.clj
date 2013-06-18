@@ -23,7 +23,7 @@
   (Thread/sleep ms))
 
 (defn auto []
-  (time (pull))
+  (pull)
   (sleep (* 60 60 1000))
   (recur))
 
@@ -37,13 +37,13 @@
 
 (defn -main
   ([]
-    (time (pull))
+    (pull)
     (shutdown-agents))
   ([command]
     (case command
           "auto" (auto)
           "show" (show)
-          "pull" (time (pull)))
+          "pull" (pull))
     (shutdown-agents))
   ([command arg1 arg2]
     (case command
