@@ -17,7 +17,7 @@ You can use `lein run` to run programm or you can generate jar with `lein uberja
 * `LAUNCH-COMMAND show` - show feeds list (url.clj file content).
 * `LAUNCH-COMMAND add folder-name feed-url` - add url to feeds file to the folder folder-name.
 
-where `LAUNCH-COMMAND = lein run / java -jar jarfile.jar`.
+where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
 
 ### License
 
