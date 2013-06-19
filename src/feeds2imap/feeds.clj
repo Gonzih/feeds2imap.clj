@@ -6,7 +6,7 @@
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]])
   (:import  [java.security MessageDigest]
-            [java.net NoRouteToHostException]))
+            [java.net NoRouteToHostException ConnectException]))
 
 (defn ^:private map-items
   "Map function over items for each folder."
@@ -95,7 +95,8 @@
               (if (< n-try 10)
                 (parse-feed url)
                 {:entries ()})
-              (catch NoRouteToHostException _ (parse-try url (inc n-try)))))]
+              (catch NoRouteToHostException _ (parse-try url (inc n-try)))
+              (catch ConnectException _       (parse-try url (inc n-try)))))]
     (parse-try url 1)))
 
 (defn new-items [cache urls]
