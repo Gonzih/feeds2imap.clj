@@ -4,9 +4,10 @@
             [feeds2imap.message :as message]
             [clojure.string :as s]
             [clojure.pprint :refer :all]
-            [clojure.tools.logging :refer [info error]])
+            [clojure.tools.logging :refer [info error]]
+            [feeds2imap.macro :refer :all])
   (:import  [java.security MessageDigest]
-            [java.net NoRouteToHostException ConnectException]))
+            [java.net NoRouteToHostException ConnectException UnknownHostException]))
 
 (defn ^:private map-items
   "Map function over items for each folder."
@@ -89,15 +90,22 @@
   (map-items (partial items-to-emails session from to) items))
 
 (defn parse [url]
-  (letfn [(parse-try [url n-try reason]
-            (info "Fetching" url "try #" n-try "reason is" reason)
-            (try
-              (if (< n-try 10)
-                (parse-feed url)
-                {:entries ()})
-              (catch NoRouteToHostException e (parse-try url (inc n-try) (class e)))
-              (catch ConnectException e       (parse-try url (inc n-try) (class e)))))]
-    (parse-try url 1 :first-run)))
+  (letfn [(log-try [url n-try reason]
+            (if (> n-try 1)
+              (info "Fetching " url "try #" n-try "reason is" reason)
+              (info "Fetching " url)))
+          (parse-try
+            ([url] (parse-try url 1 :no-reason))
+            ([url n-try reason]
+              (log-try url n-try reason)
+              (try*
+                (if (< n-try 10)
+                  (parse-feed url)
+                  {:entries ()})
+                (catch* [ConnectException
+                         NoRouteToHostException
+                         UnknownHostException] e (parse-try url (inc n-try) (class e))))))]
+    (parse-try url)))
 
 (defn new-items [cache urls]
   (->> urls
