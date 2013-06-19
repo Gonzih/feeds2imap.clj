@@ -1,7 +1,7 @@
 ## feeds2imap.clj
 
 RSS/Atom reader implemented in Clojure.
-It stores new items in the mail folders using IMAP APPEND command.
+It stores new items in the mail folders using IMAP APPEND command (java.mail framework).
 
 ### Configuration
 By default configuration dir is `$HOME/.config/feeds2imap.clj`.
