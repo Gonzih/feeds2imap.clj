@@ -6,6 +6,8 @@
             [feeds2imap.folder :as folder]
             [clojure.pprint :refer [pprint]]))
 
+(set! *warn-on-reflection* true)
+
 (defn pull []
   (let [{:keys [username password host port to from]} (settings/imap)
         imap-session  (imap/get-session (imap/get-props) nil)
