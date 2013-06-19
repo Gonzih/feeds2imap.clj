@@ -89,15 +89,15 @@
   (map-items (partial items-to-emails session from to) items))
 
 (defn parse [url]
-  (letfn [(parse-try [url n-try]
-            (info "Fetching data from" url "try n" n-try)
+  (letfn [(parse-try [url n-try reason]
+            (info "Fetching" url "try #" n-try "reason is" reason)
             (try
               (if (< n-try 10)
                 (parse-feed url)
                 {:entries ()})
-              (catch NoRouteToHostException _ (parse-try url (inc n-try)))
-              (catch ConnectException _       (parse-try url (inc n-try)))))]
-    (parse-try url 1)))
+              (catch NoRouteToHostException e (parse-try url (inc n-try) (class e)))
+              (catch ConnectException e       (parse-try url (inc n-try) (class e)))))]
+    (parse-try url 1 :first-run)))
 
 (defn new-items [cache urls]
   (->> urls
