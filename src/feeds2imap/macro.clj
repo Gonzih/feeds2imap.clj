@@ -17,8 +17,6 @@
      (catch B e (println (class e)))
      (catch C e (println (class e))))
 
-
-
    (try*
      (println :a)
      (println :b)
