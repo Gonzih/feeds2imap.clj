@@ -1,7 +1,7 @@
 (ns feeds2imap.imap
   (:require [feeds2imap.folder :as folder]
             [feeds2imap.message :as message])
-  (:import [javax.mail Session]
+  (:import [javax.mail Session Store]
            [java.util Properties]))
 
 (defn get-props []
@@ -13,7 +13,7 @@
 (defn get-session [props authenticator]
   (Session/getInstance props authenticator))
 
-(defn get-store [session]
+(defn ^Store get-store [session]
   (.getStore session))
 
 (defn connect [store host port username password]
