@@ -29,7 +29,7 @@ Distributed under the Eclipse Public License, the same as Clojure.
 Thanks to Greg Hendershott for original idea implemented in Racket
 http://www.greghendershott.com/2013/05/feeds2gmail.html
 
-### Similar project
+### Similar projects
 * https://github.com/Gonzih/feeds2imap.rb - My implementation in Ruby.
 * http://www.greghendershott.com/2013/05/feeds2gmail.html - Racket implementation by Greg Hendershott.
 * https://github.com/cordawyn/rss2imap - Haskell implementation by Slava Kravchenko.
