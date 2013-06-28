@@ -30,6 +30,8 @@ Thanks to Greg Hendershott for original idea implemented in Racket
 http://www.greghendershott.com/2013/05/feeds2gmail.html
 
 ### Similar projects
-* https://github.com/Gonzih/feeds2imap.rb - My implementation in Ruby.
-* http://www.greghendershott.com/2013/05/feeds2gmail.html - Racket implementation by Greg Hendershott.
-* https://github.com/cordawyn/rss2imap - Haskell implementation by Slava Kravchenko.
+
+* [My Ruby prototype](https://github.com/Gonzih/feeds2imap.rb)
+* [My Clojure implementation](https://github.com/Gonzih/feeds2imap.clj)
+* [Racket implementation](https://github.com/greghendershott/feeds2gmail)
+* [Haskell implementation](https://github.com/cordawyn/rss2imap)
