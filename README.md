@@ -8,11 +8,12 @@ By default configuration dir is `$HOME/.config/feeds2imap.clj`.
 
 The only file required to run the code is *imap.clj*. Take a look at *imap.clj.example* for details.
 
-Feeds and folders can be added using the `add` command (see below), or you can write them directly in the *urls.clj* file (inside the configuration directory). The format of this file is as follows:
+Feeds and folders can be added using the `add` command (see below), or you can write them directly in the *urls.clj* file (inside the configuration directory).
+The format of this file is as follows:
 
 ```clojure
-{"folder1" ["url1" "url2" ...]
- "folder2" [...]
+{:folder1 ["url1" "url2" ...]
+ :folder2 [...]
  ...}
 ```
 
