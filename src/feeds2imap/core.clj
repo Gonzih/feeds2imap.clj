@@ -4,7 +4,10 @@
             [feeds2imap.settings :as settings]
             [feeds2imap.imap :as imap]
             [feeds2imap.folder :as folder]
-            [clojure.pprint :refer [pprint]]))
+            [feeds2imap.macro :refer :all]
+            [clojure.tools.logging :refer [info error]]
+            [clojure.pprint :refer [pprint]])
+  (:import [java.net NoRouteToHostException UnknownHostException]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,10 +19,13 @@
         urls          (settings/urls)
         new-items     (feeds/new-items cache urls)
         emails        (feeds/to-emails imap-session from to new-items)]
-    (with-open [store imap-store]
-      (imap/connect store host port username password)
-      (folder/append-emails store emails)
-      (settings/write-items (feeds/mark-all-as-read cache new-items)))))
+    (try*
+      (with-open [store imap-store]
+        (imap/connect store host port username password)
+        (folder/append-emails store emails)
+        (settings/write-items (feeds/mark-all-as-read cache new-items)))
+      (catch* [UnknownHostException NoRouteToHostException] e
+              (info "Exception in pull" e)))))
 
 (defn sleep [ms]
   (Thread/sleep ms))
