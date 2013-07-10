@@ -7,7 +7,8 @@
             [feeds2imap.macro :refer :all]
             [clojure.tools.logging :refer [info error]]
             [clojure.pprint :refer [pprint]])
-  (:import [java.net NoRouteToHostException UnknownHostException]))
+  (:import [java.net NoRouteToHostException UnknownHostException]
+           [javax.mail MessagingException]))
 
 (set! *warn-on-reflection* true)
 
@@ -24,7 +25,7 @@
         (imap/connect store host port username password)
         (folder/append-emails store emails)
         (settings/write-items (feeds/mark-all-as-read cache new-items)))
-      (catch* [UnknownHostException NoRouteToHostException] e
+      (catch* [UnknownHostException NoRouteToHostException MessagingException] e
               (info "Exception in pull" e)))))
 
 (defn sleep [ms]
