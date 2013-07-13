@@ -100,7 +100,7 @@
             ([url n-try reason]
               (log-try url n-try reason)
               (try*
-                (if (< n-try 10)
+                (if (< n-try 3)
                   (parse-feed url)
                   {:entries ()})
                 (catch* [ConnectException
