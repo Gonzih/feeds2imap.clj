@@ -7,7 +7,8 @@
             [clojure.tools.logging :refer [info error]]
             [feeds2imap.macro :refer :all])
   (:import  [java.security MessageDigest]
-            [java.net NoRouteToHostException ConnectException UnknownHostException]))
+            [java.net NoRouteToHostException ConnectException UnknownHostException]
+            [java.io IOException]))
 
 (defn ^:private map-items
   "Map function over items for each folder."
@@ -104,7 +105,8 @@
                   {:entries ()})
                 (catch* [ConnectException
                          NoRouteToHostException
-                         UnknownHostException] e (parse-try url (inc n-try) (class e))))))]
+                         UnknownHostException
+                         IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
 (defn new-items [cache urls]
