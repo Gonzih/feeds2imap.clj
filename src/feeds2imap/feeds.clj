@@ -93,7 +93,7 @@
 (defn parse [url]
   (letfn [(log-try [url n-try reason]
             (if (> n-try 1)
-              (info "Fetching " url "try #" n-try "reason is" reason)
+              (info "Fetching " url "try" n-try "reason is" reason)
               (info "Fetching " url)))
           (parse-try
             ([url] (parse-try url 1 :no-reason))
