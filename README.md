@@ -6,9 +6,9 @@ It stores new items in the mail folders using IMAP APPEND command (java.mail fra
 ### Configuration
 By default configuration dir is `$HOME/.config/feeds2imap.clj`.
 
-The only file required to run the code is *imap.clj*. Take a look at *imap.clj.example* for details.
+The only file required to run the code is `imap.clj`. Take a look at `imap.clj.example` for details.
 
-Feeds and folders can be added using the `add` command (see below), or you can write them directly in the *urls.clj* file (inside the configuration directory).
+Feeds and folders can be added using the `add` command (see below), or you can write them directly in the `urls.clj` file (inside the configuration directory).
 The format of this file is as follows:
 
 ```clojure
