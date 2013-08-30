@@ -142,4 +142,4 @@
        (pmap-items parse)
        (map-items :entries)
        flatten-items
-       (filter-items (partial new? cache)))) ;items
+       (filter-items (partial new? cache))))
