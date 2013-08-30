@@ -1,15 +1,30 @@
 (ns feeds2imap.message
-  (:import [javax.mail Message$RecipientType]
+  (:require [clojure.core.typed :refer :all]
+            [feeds2imap.types :refer :all])
+  (:import [javax.mail Message$RecipientType Session]
            [javax.mail.internet MimeMessage InternetAddress MimeBodyPart]
            [java.util Date]))
 
-(defn from-map
+(non-nil-return javax.mail.Message$RecipientType/TO :all)
+
+(ann recipient-type-to [-> Message$RecipientType])
+(defn ^Message$RecipientType recipient-type-to
+  []
+  {:post [%]}
+  (Message$RecipientType/TO))
+
+(ann from-map [Session (HMap :mandatory {:from    String
+                                         :to      String
+                                         :subject String
+                                         :html    String })
+               -> Message])
+(defn ^MimeMessage from-map
   "Create message from map."
-  [session {:keys [from to subject html]}]
+  [^Session session {:keys [from ^String to subject html]}]
   (let [message (MimeMessage. session)]
     (doto message
       (.setFrom (InternetAddress. from))
-      (.setRecipients Message$RecipientType/TO to)
+      (.setRecipients (recipient-type-to) to)
       (.setSubject subject)
       (.setContent html "text/html; charset=utf-8")
       (.setSentDate (Date.)))))

@@ -6,9 +6,11 @@
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [clojure.tools.logging :refer [info error]]
-            [clojure.pprint :refer [pprint]])
+            [clojure.pprint :refer [pprint]]
+            [clojure.core.typed :refer :all])
   (:import [java.net NoRouteToHostException UnknownHostException]
-           [javax.mail MessagingException]))
+           [javax.mail MessagingException]
+           [clojure.lang Keyword]))
 
 (set! *warn-on-reflection* true)
 
@@ -28,6 +30,7 @@
       (catch* [UnknownHostException NoRouteToHostException MessagingException] e
               (info "Exception in pull" e)))))
 
+(ann sleep [Long -> nil])
 (defn sleep [ms]
   (Thread/sleep ms))
 
@@ -36,6 +39,7 @@
   (sleep (* 60 60 1000))
   (recur))
 
+(ann add [Keyword String -> Any])
 (defn add [folder url]
   (let [folder (keyword folder)
         urls (settings/urls)

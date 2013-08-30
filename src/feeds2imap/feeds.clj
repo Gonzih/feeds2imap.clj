@@ -5,21 +5,32 @@
             [clojure.string :as s]
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]]
-            [feeds2imap.macro :refer :all])
+            [feeds2imap.macro :refer :all]
+            [clojure.core.typed :refer :all]
+            [feeds2imap.types :refer :all])
   (:import  [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException]
-            [java.io IOException]))
+            [java.io IOException]
+            [javax.mail Session]
+            [javax.mail.internet MimeMessage]
+            [clojure.lang Keyword]))
 
+(ann parse-feed [String -> ParsedFeed])
+
+(ann map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
+                   [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
 (defn ^:private map-items
   "Map function over items for each folder."
   [fun coll]
   (map (fn [[folder items]] [folder (map fun items)]) coll))
 
+(ann pmap-items [(Fn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
 (defn ^:private pmap-items
   "Map function over items for each folder using pmap."
   [fun coll]
   (pmap (fn [[folder items]] [folder (pmap fun items)]) coll))
 
+(ann filter-items [(Fn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
 (defn ^:private filter-items
   "Filter items for each folder.
    Filter folders with non empty items collection."
@@ -30,11 +41,13 @@
        (filter (fn [[folder items]]
                  (seq items)))))
 
-(defn ^:private flattern-items [items]
-  (map (fn [[folder emails]]
-        [folder (flatten emails)])
+(ann flatten-items [(Folder UnflattenedItems) -> (Folder Items)])
+(defn ^:private flatten-items [items]
+  (map (fn [[folder items]]
+        [folder (flatten items)])
        items))
 
+(ann item-authors [Item -> String])
 (defn ^:private item-authors [{:keys [authors]}]
   (s/join (map (fn [author]
                  (str (:name author)
@@ -43,21 +56,27 @@
                       " | "
                       (:uri   author))) authors)))
 
-(defn md5 [string]
+(non-nil-return MessageDigest/GetInstance :all)
+
+(ann md5 [String -> String])
+(defn md5 [^String string]
   {:pre [(string? string)]}
   (let [md (MessageDigest/getInstance "MD5")]
-    (.toString  (BigInteger. 1 (.digest md  (.getBytes string "UTF-8"))) 16)))
+    (str (.toString  (BigInteger. 1 (.digest md (.getBytes string "UTF-8"))) 16))))
 
+(ann digest [Item -> String])
 (defn ^:private digest
   "Generates unique digest for item."
   [{:keys [title link] :as item}]
   (md5 (str title link (item-authors item))))
 
+(ann new? [Cache Item -> Boolean])
 (defn ^:private new?
   "Looks up item in the cache"
   [cache item]
   (not (contains? cache (digest item))))
 
+(ann mark-all-as-read [Cache Items -> Cache])
 (defn mark-all-as-read
   "Adds all items to cache.
    Returns updated cache."
@@ -68,13 +87,21 @@
        (map digest)
        (into cache)))
 
-;TODO use hiccup here, extract all data from item
+(ann item-content [Item -> String])
+(defn item-content [item]
+  (str (or (-> item :contents first :value)
+           (-> item :description :value))))
+
+(ann to-email-map [String String Item -> (HMap :mandatory {:from    String
+                                                           :to      String
+                                                           :subject String
+                                                           :html    String})])
 (defn to-email-map
   "Convert item to map for Message construction."
   [from to item]
   (let [{:keys [title link]} item
         authors (item-authors item)
-        content (-> item :contents first :value)
+        content (item-content item)
         html (html [:table
                      [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
                              (when (seq authors)
@@ -82,14 +109,17 @@
                              [:tr [:td content]]]])]
     {:from from :to to :subject title :html html}))
 
+(ann items-to-email [Session String String Item -> Message])
 (defn items-to-emails [session from to item]
   (message/from-map session (to-email-map from to item)))
 
+(ann to-emails [Session String String (Folder Items) -> (Folder Messages)])
 (defn to-emails
   "Convert items to Messages."
   [session from to items]
-  (map-items (partial items-to-emails session from to) items))
+  (map-items (partial items-to-emails session from to) items)) ; (Folder Messages)
 
+(ann parse [String -> ParsedFeed])
 (defn parse [url]
   (letfn [(log-try [url n-try reason]
             (if (> n-try 1)
@@ -109,9 +139,10 @@
                          IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
+(ann new-items [Cache (Folder Urls) -> (Folder Items)])
 (defn new-items [cache urls]
   (->> urls
        (pmap-items parse)
        (map-items :entries)
-       (flattern-items)
-       (filter-items (partial new? cache))))
+       flatten-items
+       (filter-items (partial new? cache)))) ;items

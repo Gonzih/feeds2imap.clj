@@ -1,21 +1,29 @@
 (ns feeds2imap.imap
   (:require [feeds2imap.folder :as folder]
-            [feeds2imap.message :as message])
-  (:import [javax.mail Session Store]
+            [feeds2imap.message :as message]
+            [clojure.core.typed :refer :all])
+  (:import [javax.mail Session Store Authenticator]
            [java.util Properties]))
 
-(defn get-props []
+(non-nil-return javax.mail.Session/getStore :all)
+(non-nil-return javax.mail.Session/getInstance :all)
+
+(ann get-props [-> Properties])
+(defn ^Properties get-props []
   (doto (Properties.)
     (.put "mail.store.protocol" "imap")
     (.put "mail.imap.starttls.enable" "true")
     (.put "mail.imap.socketFactory.class" "javax.net.ssl.SSLSocketFactory")))
 
-(defn get-session [props authenticator]
+(ann get-session [Properties Authenticator -> Session])
+(defn ^Session get-session [^Properties props authenticator]
   (Session/getInstance props authenticator))
 
-(defn ^Store get-store [session]
+(ann get-store [Session -> Store])
+(defn ^Store get-store [^Session session]
   (.getStore session))
 
-(defn connect [store host port username password]
+(ann connect [Store String int String String -> Store])
+(defn ^Store connect [^Store store host port username password]
   (.connect store host port username password)
   store)

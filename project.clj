@@ -8,5 +8,6 @@
                  [org.clojars.scsibug/feedparser-clj "0.4.0"]
                  [hiccup "1.0.3"]
                  [org.clojure/tools.logging "0.2.6"]
-                 [log4j/log4j "1.2.17"]]
+                 [log4j/log4j "1.2.17"]
+                 [org.clojure/core.typed "0.2.1"]]
   :main feeds2imap.core)
