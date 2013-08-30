@@ -13,11 +13,7 @@
   {:post [%]}
   (Message$RecipientType/TO))
 
-(ann from-map [Session (HMap :mandatory {:from    String
-                                         :to      String
-                                         :subject String
-                                         :html    String })
-               -> Message])
+(ann from-map [Session MessageMap -> Message])
 (defn ^MimeMessage from-map
   "Create message from map."
   [^Session session {:keys [from ^String to subject html]}]

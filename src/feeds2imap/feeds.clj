@@ -92,10 +92,7 @@
   (str (or (-> item :contents first :value)
            (-> item :description :value))))
 
-(ann to-email-map [String String Item -> (HMap :mandatory {:from    String
-                                                           :to      String
-                                                           :subject String
-                                                           :html    String})])
+(ann to-email-map [String String Item -> MessageMap])
 (defn to-email-map
   "Convert item to map for Message construction."
   [from to item]

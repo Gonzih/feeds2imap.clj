@@ -25,3 +25,9 @@
 
 (def-alias Folder
   (TFn [[x :variance :covariant]] (Map Keyword x)))
+
+(def-alias MessageMap
+  (HMap :mandatory {:from    String
+                    :to      String
+                    :subject String
+                    :html    String }))
