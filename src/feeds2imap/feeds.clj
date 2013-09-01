@@ -106,7 +106,7 @@
                              [:tr [:td content]]]])]
     {:from from :to to :subject title :html html}))
 
-(ann items-to-email [Session String String Item -> Message])
+(ann items-to-emails [Session String String Item -> Message])
 (defn items-to-emails [session from to item]
   (message/from-map session (to-email-map from to item)))
 
