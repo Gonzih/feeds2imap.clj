@@ -99,12 +99,13 @@
   (let [{:keys [title link]} item
         authors (item-authors item)
         content (item-content item)
+        pubdate (or (:updated-date item) (:published-date item))
         html (html [:table
                      [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
                              (when (seq authors)
                                [:tr [:td authors [:hr]]])
                              [:tr [:td content]]]])]
-    {:from from :to to :subject title :html html}))
+    {:from from :to to :date pubdate :subject title :html html}))
 
 (ann items-to-emails [Session String String Item -> Message])
 (defn items-to-emails [session from to item]
