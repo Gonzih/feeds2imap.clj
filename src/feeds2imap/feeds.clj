@@ -2,6 +2,7 @@
   (:require [hiccup.core :refer :all]
             [feedparser-clj.core :refer :all]
             [feeds2imap.message :as message]
+            [clojure.data.codec.base64 :as b64]
             [clojure.string :as s]
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]]
@@ -49,12 +50,13 @@
 
 (ann item-authors [Item -> String])
 (defn ^:private item-authors [{:keys [authors]}]
-  (s/join (map (fn [author]
-                 (str (:name author)
-                      " | "
-                      (:email  author)
-                      " | "
-                      (:uri   author))) authors)))
+  (let [format-author  ; as "Name <name[at]example.com> http://example.com/"
+        (fn [a]
+          (let [{:keys [name email uri]} a
+                email (when email (str "<" (apply str (replace {\@ "[at]"} email)) ">"))]
+            (s/join " " (filter identity [name email uri]))))]
+    ;; multiple authors are coma-separated
+    (s/join ", " (map format-author authors))))
 
 (non-nil-return MessageDigest/GetInstance :all)
 
@@ -92,6 +94,12 @@
   (str (or (-> item :contents first :value)
            (-> item :description :value))))
 
+(defn ^:private encoded-word
+  "Encodes From: field. See http://en.wikipedia.org/wiki/MIME#Encoded-Word"
+  [s]
+  (let [encoded-text (String. (b64/encode (.getBytes s "UTF-8")))]
+    (str "=?UTF-8?B?" encoded-text "?=")))
+
 (ann to-email-map [String String Item -> MessageMap])
 (defn to-email-map
   "Convert item to map for Message construction."
@@ -99,13 +107,14 @@
   (let [{:keys [title link]} item
         authors (item-authors item)
         content (item-content item)
+        from+   (s/join " " [(encoded-word authors) (str "<" from ">")])
         pubdate (or (:updated-date item) (:published-date item))
         html (html [:table
                      [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
                              (when (seq authors)
                                [:tr [:td authors [:hr]]])
                              [:tr [:td content]]]])]
-    {:from from :to to :date pubdate :subject title :html html}))
+    {:from from+ :to to :date pubdate :subject title :html html}))
 
 (ann items-to-emails [Session String String Item -> Message])
 (defn items-to-emails [session from to item]
