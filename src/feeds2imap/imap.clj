@@ -3,6 +3,7 @@
             [feeds2imap.message :as message]
             [clojure.core.typed :refer :all])
   (:import [javax.mail Session Store Authenticator]
+           [java.net UnknownHostException]
            [java.util Properties]))
 
 (non-nil-return javax.mail.Session/getStore :all)
@@ -25,5 +26,7 @@
 
 (ann connect [Store String int String String -> Store])
 (defn ^Store connect [^Store store host port username password]
+  (when (some nil? [host port username password])
+    (throw (UnknownHostException. "Put IMAP settings in ~/.config/feeds2imap.clj/imap.clj")))
   (.connect store host port username password)
   store)
