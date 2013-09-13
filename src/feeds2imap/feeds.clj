@@ -138,7 +138,15 @@
               (log-try url n-try reason)
               (try*
                 (if (< n-try 3)
-                  (parse-feed url)
+                  (let [feed (parse-feed url)
+                        ;; set every entry's :authors, if missing, to feed's title and url
+                        feed-as-author {:name (:title feed) :uri (:link feed)}
+                        set-authors (fn [e]
+                                      (if (seq (:authors e))
+                                        e
+                                        (assoc e :authors [feed-as-author])))
+                        entries (map set-authors (:entries feed))]
+                    (assoc feed :entries entries))
                   {:entries ()})
                 (catch* [ConnectException
                          NoRouteToHostException
