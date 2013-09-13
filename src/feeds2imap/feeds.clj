@@ -13,7 +13,8 @@
             [java.io IOException]
             [javax.mail Session]
             [javax.mail.internet MimeMessage]
-            [clojure.lang Keyword]))
+            [clojure.lang Keyword]
+            [com.sun.syndication.io ParsingFeedException]))
 
 (ann parse-feed [String -> ParsedFeed])
 
@@ -133,6 +134,7 @@
                 (catch* [ConnectException
                          NoRouteToHostException
                          UnknownHostException
+                         ParsingFeedException
                          IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
