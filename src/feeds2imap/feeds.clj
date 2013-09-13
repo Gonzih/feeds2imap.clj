@@ -8,12 +8,14 @@
             [feeds2imap.macro :refer :all]
             [clojure.core.typed :refer :all]
             [feeds2imap.types :refer :all])
-  (:import  [java.security MessageDigest]
+  (:import  [java.lang IllegalArgumentException]
+            [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException]
             [java.io IOException]
             [javax.mail Session]
             [javax.mail.internet MimeMessage]
-            [clojure.lang Keyword]))
+            [clojure.lang Keyword]
+            [com.sun.syndication.io ParsingFeedException]))
 
 (ann parse-feed [String -> ParsedFeed])
 
@@ -133,6 +135,8 @@
                 (catch* [ConnectException
                          NoRouteToHostException
                          UnknownHostException
+                         ParsingFeedException
+                         IllegalArgumentException
                          IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
