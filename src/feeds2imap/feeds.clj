@@ -8,7 +8,8 @@
             [feeds2imap.macro :refer :all]
             [clojure.core.typed :refer :all]
             [feeds2imap.types :refer :all])
-  (:import  [java.security MessageDigest]
+  (:import  [java.lang IllegalArgumentException]
+            [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException]
             [java.io IOException]
             [javax.mail Session]
@@ -135,6 +136,7 @@
                          NoRouteToHostException
                          UnknownHostException
                          ParsingFeedException
+                         IllegalArgumentException
                          IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
