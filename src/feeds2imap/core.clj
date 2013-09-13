@@ -5,9 +5,11 @@
             [feeds2imap.imap :as imap]
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
+            [feeds2imap.opml :refer [convert-opml]]
             [clojure.tools.logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
-            [clojure.core.typed :refer :all])
+            [clojure.core.typed :refer :all]
+            [clojure.java.io :refer [file writer]])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
            [clojure.lang Keyword]))
@@ -58,7 +60,16 @@
           "show" (show)
           "pull" (pull))
     (shutdown-agents))
+  ([command arg]
+     (case command
+       "opml2clj" (->> (java.io.File. ^String arg)
+                       convert-opml
+                       pprint)))
   ([command arg1 arg2]
     (case command
-          "add" (do (add arg1 arg2) (show)))
+          "add" (do (add arg1 arg2) (show))
+          "opml2clj" (let [w (writer (file arg2))
+                           m (->> (java.io.File. ^String arg1)
+                                  convert-opml)]
+                       (pprint m w)))
     (shutdown-agents)))
