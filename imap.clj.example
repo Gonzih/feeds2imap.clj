@@ -3,4 +3,4 @@
  :username "username"       ; imap username
  :password "password"       ; imap password
  :to "to@email.com"         ; address to put in to the "to" email field
- :from "RSS <rss@bot.com>"} ; address to put in to the "from" email field
+ :from "rss@bot.com"}       ; plain address to put in to the "from" email field
