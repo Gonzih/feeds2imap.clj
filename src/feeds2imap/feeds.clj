@@ -128,6 +128,15 @@
   [session from to items]
   (map-items (partial items-to-emails session from to) items)) ; (Folder Messages)
 
+(defn set-entries-authors [feed]
+  (let [feed-as-author {:name (:title feed) :uri (:link feed)}
+        set-authors (fn [e]
+                      (if (seq (:authors e))
+                        e
+                        (assoc e :authors [feed-as-author])))
+        entries (map set-authors (:entries feed))]
+    (assoc feed :entries entries)))
+
 (ann parse [String -> ParsedFeed])
 (defn parse [url]
   (letfn [(log-try [url n-try reason]
@@ -140,15 +149,7 @@
               (log-try url n-try reason)
               (try*
                 (if (< n-try 3)
-                  (let [feed (parse-feed url)
-                        ;; set every entry's :authors, if missing, to feed's title and url
-                        feed-as-author {:name (:title feed) :uri (:link feed)}
-                        set-authors (fn [e]
-                                      (if (seq (:authors e))
-                                        e
-                                        (assoc e :authors [feed-as-author])))
-                        entries (map set-authors (:entries feed))]
-                    (assoc feed :entries entries))
+                  (-> url parse-feed set-entries-authors)
                   {:entries ()})
                 (catch* [ConnectException
                          NoRouteToHostException
