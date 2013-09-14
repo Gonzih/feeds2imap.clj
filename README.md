@@ -20,7 +20,7 @@ The format of this file is as follows:
 ### Usage
 You can use `lein run` to run programm or you can generate jar with `lein uberjar` and run programm with `java -jar <path-to-jar>`.
 
- * `LAUNCH-COMMAND` - pull new items.
+* `LAUNCH-COMMAND` - pull new items.
 * `LAUNCH-COMMAND pull` - pull new items.
 * `LAUNCH-COMMAND auto` - pull new items every 1 hour in the loop.
 * `LAUNCH-COMMAND show` - show feeds list (url.clj file content).
