@@ -8,7 +8,8 @@
             [clojure.tools.logging :refer [info error]]
             [feeds2imap.macro :refer :all]
             [clojure.core.typed :refer :all]
-            [feeds2imap.types :refer :all])
+            [feeds2imap.types :refer :all]
+            [feeds2imap.annotations :refer :all])
   (:import  [java.lang IllegalArgumentException]
             [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException]
@@ -18,10 +19,6 @@
             [clojure.lang Keyword]
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
-
-(ann ^:no-check parse-feed [String -> ParsedFeed])
-(ann ^:no-check hiccup.compiler/render-html [(Option Any) -> String])
-(ann ^:no-check hiccup.compiler/render-attr-map [(Option Any) -> String])
 
 (ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
                               [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))

@@ -1,7 +1,10 @@
 (ns feeds2imap.folder
   (:require [clojure.tools.logging :refer [info error]]
-            [clojure.core.typed :refer :all])
-  (:import  [javax.mail Store Folder Message]))
+            [clojure.core.typed :refer :all]
+            [feeds2imap.annotations :refer :all])
+  (:import  [javax.mail Store Folder Message]
+            [javax.mail.internet MimeMessage]
+            [clojure.lang Keyword]))
 
 (non-nil-return javax.mail.Store/getFolder :all)
 (non-nil-return javax.mail.Folder/exists :all)
@@ -21,12 +24,12 @@
     (info "Creating IMAP folder" folder)
     (.create (get-folder store folder) Folder/HOLDS_MESSAGES)))
 
-(ann append [Store String (Vec Message) -> nil])
+(ann ^:no-check append [Store String (Seqable MimeMessage) -> nil])
 (defn append [store folder messages]
   (.appendMessages (get-folder store folder)
                    (into-array Message messages)))
 
-(ann append-emails [Store (Vec Message) -> (Seq Message)])
+(ann ^:no-check append-emails [Store (Map Keyword (Seqable MimeMessage)) -> Any])
 (defn append-emails [store emails]
   (doall
     (pmap (fn [[folder emails]]
