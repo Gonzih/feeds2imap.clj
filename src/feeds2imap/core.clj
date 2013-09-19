@@ -13,7 +13,8 @@
             [clojure.java.io :refer [file writer]])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
-           [clojure.lang Keyword]))
+           [clojure.lang Keyword]
+           [java.io File]))
 
 (set! *warn-on-reflection* true)
 
@@ -67,14 +68,14 @@
     (shutdown-agents))
   ([command arg]
      (case command
-       "opml2clj" (->> (java.io.File. ^String arg)
+       "opml2clj" (->> (File. ^String arg)
                        convert-opml
                        pprint)))
   ([command arg1 arg2]
     (case command
           "add" (do (add arg1 arg2) (show))
           "opml2clj" (let [w (writer (file arg2))
-                           m (->> (java.io.File. ^String arg1)
+                           m (->> (File. ^String arg1)
                                   convert-opml)]
                        (pprint m w)))
     (shutdown-agents)))

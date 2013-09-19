@@ -33,3 +33,5 @@
                     :subject String
                     :html    String}
         :optional  {:date (Option Date)}))
+
+(def-alias XML (Map Keyword Any))

@@ -1,7 +1,13 @@
 (ns feeds2imap.opml
   (:require [clojure.pprint :refer [pprint]]
-            clojure.xml))
+            [clojure.core.typed :refer :all]
+            [feeds2imap.types :refer :all]
+            [feeds2imap.annotations :refer :all]
+            [clojure.xml])
+  (:import  [java.io File]
+            [clojure.lang Keyword]))
 
+(ann ^:no-check opml-find-tag [Keyword XML -> Keyword])
 (defn opml-find-tag
   [tag-keyword xml]
   (when xml
@@ -14,6 +20,7 @@
         xml
         (recur tag-keyword (:content xml))))))
 
+(ann ^:no-check opml-folder-keyword [XML -> Keyword])
 (defn opml-folder-keyword
   [xml-el]
   (->> (:title (:attrs xml-el))
@@ -23,12 +30,14 @@
        (apply str)
        keyword))
 
+(ann ^:no-check opml-build-entry [XML -> String])
 (defn opml-build-entry
   "Returns a string with a feed URL or a map."
   [xml-outline]
   ;; nested folders not supported
   (:xmlUrl (:attrs xml-outline)))
 
+(ann ^:no-check opml-build-map [XML -> (Map Keyword (Vec String))])
 (defn opml-build-map
   "Returns a map of :foldernames to vectors of URLs.
   Entries without a folder are assigned to :__global__."
@@ -43,10 +52,10 @@
                                       vec)]
                        (assoc m key inner))
                      ;; an entry
-                     (update-in m [:__global__] conj (:xmlUrl xml-el))
-                     ))]
+                     (update-in m [:__global__] conj (:xmlUrl xml-el))))]
     (reduce update-m {} xml-outlines)))
 
+(ann ^:no-check convert-opml [File -> (Folder Urls)])
 (defn convert-opml [istream]
   "Takes an input stream with OPML contents, returns a map for `urls.clj`."
   (let [x (clojure.xml/parse istream)
