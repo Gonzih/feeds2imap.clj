@@ -15,6 +15,6 @@
                  [org.clojure/data.codec "0.1.0"]
                  [hiccup "1.0.4"]
                  [org.clojure/tools.logging "0.2.6"]
-                 [log4j/log4j "1.2.17"]
-                 [org.clojure/core.typed "0.2.7"]]
-  :main feeds2imap.core)
+                 [log4j/log4j "1.2.17"]]
+  :main feeds2imap.core
+  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.7"]]}})
