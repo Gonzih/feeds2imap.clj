@@ -6,6 +6,7 @@
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [feeds2imap.opml :refer [convert-opml]]
+            [feeds2imap.annotations :refer :all]
             [clojure.tools.logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
             [clojure.core.typed :refer :all]
@@ -16,6 +17,7 @@
 
 (set! *warn-on-reflection* true)
 
+(ann ^:no-check pull [-> Any])
 (defn pull []
   (let [{:keys [username password host port to from]} (settings/imap)
         imap-session  (imap/get-session (imap/get-props) nil)
@@ -36,6 +38,7 @@
 (defn sleep [ms]
   (Thread/sleep ms))
 
+(ann ^:no-check auto [-> Any])
 (defn auto []
   (pull)
   (sleep (* 60 60 1000))
@@ -48,8 +51,10 @@
         folder-urls (or (get urls folder) [])]
     (settings/urls (assoc urls folder (conj folder-urls url)))))
 
+(ann show [-> nil])
 (defn show [] (pprint (settings/urls)))
 
+(ann ^:no-check -main [Any -> Any])
 (defn -main
   ([]
     (pull)

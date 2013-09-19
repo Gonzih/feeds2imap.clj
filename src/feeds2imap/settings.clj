@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :refer [info error]]
             [clojure.core.typed :refer :all]
-            [feeds2imap.types :refer :all])
+            [feeds2imap.types :refer :all]
+            [feeds2imap.annotations :refer :all])
   (:import  [java.io File]
             [clojure.lang Keyword]))
 
@@ -15,7 +16,7 @@
 (defn ^File file [^String path]
   (File. path))
 
-(ann bootsrap-config-dir [-> Any])
+(ann bootstrap-config-dir [-> Any])
 (defn ^:private bootstrap-config-dir []
   (let [file (file (config-dir))]
     (when-not (.exists file)
@@ -28,8 +29,8 @@
       (.createNewFile file)
       (spit path (str initial)))))
 
-(ann read-or-create-file (Fn [String (Set String) -> Cache]
-                             [String (HMap) -> (Folder Urls)]))
+(ann ^:no-check read-or-create-file (Fn [String (Set String) -> Cache]
+                                        [String (HMap) -> (Folder Urls)]))
 (defn ^:private read-or-create-file [path initial]
   (let [path (str (config-dir) path)]
     (bootstrap-config-dir)
