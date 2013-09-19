@@ -5,6 +5,7 @@ It stores new items in the mail folders using IMAP APPEND command (java.mail fra
 
 ### Configuration
 By default configuration dir is `$HOME/.config/feeds2imap.clj`.
+You can change it setting environment variable `$FEEDS2IMAP_HOME` (something like `FEEDS2IMAP_HOME=/home/me/.someotherdir lein ...`).
 
 The only file required to run the code is `imap.clj`. Take a look at `imap.clj.example` for details.
 

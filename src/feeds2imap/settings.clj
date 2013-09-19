@@ -8,9 +8,14 @@
   (:import  [java.io File]
             [clojure.lang Keyword]))
 
+(ann default-config-dir [-> String])
+(defn ^:private default-config-dir []
+  (str (System/getenv "HOME") "/.config/feeds2imap.clj/"))
+
 (ann config-dir [-> String])
 (defn ^:private config-dir []
-  (str (System/getenv "HOME") "/.config/feeds2imap.clj/"))
+  (str (or (System/getenv "FEEDS2IMAP_HOME")
+           (default-config-dir))))
 
 (ann file [String -> File])
 (defn ^File file [^String path]
