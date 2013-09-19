@@ -1,7 +1,8 @@
 (ns feeds2imap.types
   (:require [clojure.core.typed :refer :all])
   (:import [clojure.lang Keyword]
-           [javax.mail.internet MimeMessage]))
+           [javax.mail.internet MimeMessage]
+           [java.util Date]))
 
 (def-alias Cache (Set String))
 
@@ -30,4 +31,5 @@
   (HMap :mandatory {:from    String
                     :to      String
                     :subject String
-                    :html    String }))
+                    :html    String}
+        :optional  {:date (Option Date)}))

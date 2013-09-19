@@ -16,24 +16,27 @@
             [javax.mail Session]
             [javax.mail.internet MimeMessage]
             [clojure.lang Keyword]
-            [com.sun.syndication.io ParsingFeedException]))
+            [com.sun.syndication.io ParsingFeedException]
+            [java.util Date]))
 
-(ann parse-feed [String -> ParsedFeed])
+(ann ^:no-check parse-feed [String -> ParsedFeed])
+(ann ^:no-check hiccup.compiler/render-html [(Option Any) -> String])
+(ann ^:no-check hiccup.compiler/render-attr-map [(Option Any) -> String])
 
-(ann map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
-                   [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
+(ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
+                              [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
 (defn ^:private map-items
   "Map function over items for each folder."
   [fun coll]
   (map (fn [[folder items]] [folder (map fun items)]) coll))
 
-(ann pmap-items [(Fn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
+(ann ^:no-check pmap-items [(Fn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
 (defn ^:private pmap-items
   "Map function over items for each folder using pmap."
   [fun coll]
   (pmap (fn [[folder items]] [folder (pmap fun items)]) coll))
 
-(ann filter-items [(Fn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
+(ann ^:no-check filter-items [(Fn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
 (defn ^:private filter-items
   "Filter items for each folder.
    Filter folders with non empty items collection."
@@ -44,13 +47,13 @@
        (filter (fn [[folder items]]
                  (seq items)))))
 
-(ann flatten-items [(Folder UnflattenedItems) -> (Folder Items)])
+(ann ^:no-check flatten-items [(Folder UnflattenedItems) -> (Folder Items)])
 (defn ^:private flatten-items [items]
   (map (fn [[folder items]]
         [folder (flatten items)])
        items))
 
-(ann item-authors [Item -> String])
+(ann ^:no-check item-authors [Item -> String])
 (defn ^:private item-authors [{:keys [authors]}]
   (let [format-author  ; as "Name <name[at]example.com> http://example.com/"
         (fn [a]
@@ -62,7 +65,7 @@
 
 (non-nil-return MessageDigest/GetInstance :all)
 
-(ann md5 [String -> String])
+(ann ^:no-check md5 [String -> String])
 (defn md5 [^String string]
   {:pre [(string? string)]}
   (let [md (MessageDigest/getInstance "MD5")]
@@ -80,7 +83,7 @@
   [cache item]
   (not (contains? cache (digest item))))
 
-(ann mark-all-as-read [Cache Items -> Cache])
+(ann ^:no-check mark-all-as-read [Cache Items -> Cache])
 (defn mark-all-as-read
   "Adds all items to cache.
    Returns updated cache."
@@ -96,11 +99,16 @@
   (str (or (-> item :contents first :value)
            (-> item :description :value))))
 
+(ann ^:no-check encoded-word [String -> String])
 (defn ^:private encoded-word
   "Encodes From: field. See http://en.wikipedia.org/wiki/MIME#Encoded-Word"
   [s]
   (let [encoded-text (String. (b64/encode (.getBytes s "UTF-8")))]
     (str "=?UTF-8?B?" encoded-text "?=")))
+
+(ann ^:no-check item-pubdate [Item -> Date])
+(defn item-pubdate [item]
+  (or (:updated-date item) (:published-date item)))
 
 (ann to-email-map [String String Item -> MessageMap])
 (defn to-email-map
@@ -110,7 +118,7 @@
         authors (item-authors item)
         content (item-content item)
         from+   (s/join " " [(encoded-word authors) (str "<" from ">")])
-        pubdate (or (:updated-date item) (:published-date item))
+        pubdate (item-pubdate item)
         html (html [:table
                      [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
                              (when (seq authors)
@@ -128,6 +136,7 @@
   [session from to items]
   (map-items (partial items-to-emails session from to) items)) ; (Folder Messages)
 
+(ann ^:no-check set-entries-authors [ParsedFeed -> ParsedFeed])
 (defn set-entries-authors [feed]
   (let [feed-as-author {:name (:title feed) :uri (:link feed)}
         set-authors (fn [e]
@@ -137,7 +146,7 @@
         entries (map set-authors (:entries feed))]
     (assoc feed :entries entries)))
 
-(ann parse [String -> ParsedFeed])
+(ann ^:no-check parse [String -> ParsedFeed])
 (defn parse [url]
   (letfn [(log-try [url n-try reason]
             (if (> n-try 1)
