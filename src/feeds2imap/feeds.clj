@@ -52,12 +52,16 @@
 
 (ann ^:no-check item-authors [Item -> String])
 (defn ^:private item-authors [{:keys [authors]}]
-  (let [format-author  ; as "Name <name[at]example.com> http://example.com/"
-        (fn [a]
-          (let [{:keys [name email uri]} a
-                email (when email (str "<" (apply str (replace {\@ "[at]"} email)) ">"))]
-            (s/join " " (filter identity [name email uri]))))]
-    ;; multiple authors are coma-separated
+  "Format each author as
+   \"Name <name[at]example.com> http://example.com/\".
+   Multiple authors are coma-separated"
+  (letfn [(format-author [author]
+            (let [{:keys [name email uri]} author
+                  email (when email
+                          (format "<%s>" (apply str (replace {\@ "[at]"} email))))
+                  fields (filter (complement nil?)
+                                 [name email uri])]
+              (s/join " " fields)))]
     (s/join ", " (map format-author authors))))
 
 (non-nil-return MessageDigest/GetInstance :all)
