@@ -17,5 +17,5 @@
                  [org.clojure/tools.logging "0.2.6"]
                  [log4j/log4j "1.2.17"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.13"]]}}
+  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.10"]]}}
   :min-lein-version "2.0.0")
