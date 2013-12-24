@@ -24,8 +24,11 @@
         imap-session  (imap/get-session (imap/get-props) nil)
         imap-store    (imap/get-store imap-session)
         cache         (settings/read-items)
+        _             (info "Found " (count cache) " items in cache.")
         urls          (settings/urls)
+        _             (info "Found " (count urls) " folders in urls.")
         new-items     (feeds/new-items cache urls)
+        _             (info "Found " (count new-items) " new-items.")
         emails        (feeds/to-emails imap-session from to new-items)]
     (try*
       (with-open [store imap-store]
