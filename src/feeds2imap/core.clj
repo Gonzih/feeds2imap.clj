@@ -32,8 +32,11 @@
         emails        (feeds/to-emails imap-session from to new-items)]
     (try*
       (with-open [store imap-store]
+        (info "Connecting to imap host.")
         (imap/connect store host port username password)
+        (info "Appending emails.")
         (folder/append-emails store emails)
+        (info "Updating cache.")
         (settings/write-items (feeds/mark-all-as-read cache new-items)))
       (catch* [UnknownHostException NoRouteToHostException MessagingException] e
               (info "Exception in pull" e)))))
