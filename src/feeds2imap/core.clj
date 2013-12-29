@@ -14,7 +14,8 @@
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
            [clojure.lang Keyword]
-           [java.io File]))
+           [java.io File]
+           [java.lang NullPointerException]))
 
 (set! *warn-on-reflection* true)
 
@@ -60,6 +61,13 @@
         folder-urls (or (get urls folder) [])]
     (settings/urls (assoc urls folder (conj folder-urls url)))))
 
+(ann ^:no-check shutdown-agents-with-try [-> Any])
+(defn shutdown-agents-with-try []
+  (try*
+    (shutdown-agents)
+    (catch* [NullPointerException] e
+            (info "Exception while shuting down agents" e))))
+
 (ann show [-> nil])
 (defn show [] (pprint (settings/urls)))
 
@@ -67,13 +75,13 @@
 (defn -main
   ([]
     (pull)
-    (shutdown-agents))
+    (shutdown-agents-with-try))
   ([command]
     (case command
           "auto" (auto)
           "show" (show)
           "pull" (pull))
-    (shutdown-agents))
+    (shutdown-agents-with-try))
   ([command arg]
      (case command
        "opml2clj" (->> (File. ^String arg)
@@ -86,4 +94,4 @@
                            m (->> (File. ^String arg1)
                                   convert-opml)]
                        (pprint m w)))
-    (shutdown-agents)))
+    (shutdown-agents-with-try)))
