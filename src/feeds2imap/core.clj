@@ -32,7 +32,7 @@
           _             (info "Found" (count new-items) "new items.")
           emails        (feeds/to-emails imap-session from to new-items)]
 
-      (when-not (empty? emails)
+      (when-not (empty? new-items)
         (with-open [store imap-store]
           (info "Connecting to imap host.")
           (imap/connect store host port username password)
