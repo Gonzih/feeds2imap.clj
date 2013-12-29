@@ -172,7 +172,7 @@
 (ann new-items [Cache (Folder Urls) -> (Folder Items)])
 (defn new-items [cache urls]
   (->> urls
-       (map-items parse)
+       (pmap-items parse)
        (map-items :entries)
        flatten-items
        (filter-items (partial new? cache))))
