@@ -20,26 +20,28 @@
 
 (ann ^:no-check pull [-> Any])
 (defn pull []
-  (let [{:keys [username password host port to from]} (settings/imap)
-        imap-session  (imap/get-session (imap/get-props) nil)
-        imap-store    (imap/get-store imap-session)
-        cache         (settings/read-items)
-        _             (info "Found" (count cache) "items in cache.")
-        urls          (settings/urls)
-        _             (info "Found" (count urls) "folders in urls.")
-        new-items     (feeds/new-items cache urls)
-        _             (info "Found" (count new-items) "new items.")
-        emails        (feeds/to-emails imap-session from to new-items)]
-    (try*
-      (with-open [store imap-store]
-        (info "Connecting to imap host.")
-        (imap/connect store host port username password)
-        (info "Appending emails.")
-        (folder/append-emails store emails)
-        (info "Updating cache.")
-        (settings/write-items (feeds/mark-all-as-read cache new-items)))
+  (try*
+    (let [{:keys [username password host port to from]} (settings/imap)
+          imap-session  (imap/get-session (imap/get-props) nil)
+          imap-store    (imap/get-store imap-session)
+          cache         (settings/read-items)
+          _             (info "Found" (count cache) "items in cache.")
+          urls          (settings/urls)
+          _             (info "Found" (count urls) "folders in urls.")
+          new-items     (feeds/new-items cache urls)
+          _             (info "Found" (count new-items) "new items.")
+          emails        (feeds/to-emails imap-session from to new-items)]
+
+      (when-not (empty? emails)
+        (with-open [store imap-store]
+          (info "Connecting to imap host.")
+          (imap/connect store host port username password)
+          (info "Appending emails.")
+          (folder/append-emails store emails)
+          (info "Updating cache.")
+          (settings/write-items (feeds/mark-all-as-read cache new-items)))))
       (catch* [UnknownHostException NoRouteToHostException MessagingException] e
-              (info "Exception in pull" e)))))
+              (info "Exception in pull" e))))
 
 (ann sleep [Long -> nil])
 (defn sleep [ms]
