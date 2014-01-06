@@ -32,7 +32,7 @@ where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
 
 ### License
 
-Copyright © 2013 Max Gonzih gonzih at gmail.com
+Copyright © 2013-2014 Max Gonzih gonzih @ gmail.com
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
