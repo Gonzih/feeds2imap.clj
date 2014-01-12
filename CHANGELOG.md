@@ -1,5 +1,5 @@
-## 0.2.0
+### 0.2.0
 
-* Rename feeds2imap.feeds/digest -> feeds2imap.feeds/uniq-identifier.
-  First try to use uri or url or link as uniq identifier.
-  If all them are nil only then calculate md5 of (str title link authors)
+* Rename `feeds2imap.feeds/digest` -> `feeds2imap.feeds/uniq-identifier`.
+  First try to use `uri` or `url` or `link` as uniq identifier.
+  If all of them are nil then calculate md5 of `(str title link authors)`.
