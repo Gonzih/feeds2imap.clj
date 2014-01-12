@@ -72,17 +72,21 @@
   (let [md (MessageDigest/getInstance "MD5")]
     (str (.toString  (BigInteger. 1 (.digest md (.getBytes string "UTF-8"))) 16))))
 
-(ann digest [Item -> String])
-(defn ^:private digest
-  "Generates unique digest for item."
-  [{:keys [title link] :as item}]
-  (md5 (str title link (item-authors item))))
+(ann ^:no-check uniq-identifier [Item -> String])
+(defn ^:private uniq-identifier
+  "Generates unique identifier for item.
+   First try uri, then url, then link.
+   Only if items listed above are empty use md5 of title + link + authors."
+  [{:keys [title uri url link] :as item}]
+    (first (filter not-empty
+                   [uri url link
+                    (md5 (str title link (item-authors item)))])))
 
 (ann new? [Cache Item -> Boolean])
 (defn ^:private new?
   "Looks up item in the cache"
   [cache item]
-  (not (contains? cache (digest item))))
+  (not (contains? cache (uniq-identifier item))))
 
 (ann ^:no-check mark-all-as-read [Cache Items -> Cache])
 (defn mark-all-as-read
@@ -92,7 +96,7 @@
   (->> items
        (map last)
        flatten
-       (map digest)
+       (map uniq-identifier)
        (into cache)))
 
 (ann item-content [Item -> String])
