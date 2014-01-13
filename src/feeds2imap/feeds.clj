@@ -86,17 +86,6 @@
   [cache item]
   (not (contains? cache (uniq-identifier item))))
 
-(ann ^:no-check mark-all-as-read [Cache Items -> Cache])
-(defn mark-all-as-read
-  "Adds all items to cache.
-   Returns updated cache."
-  [cache items]
-  (->> items
-       (map last)
-       flatten
-       (map uniq-identifier)
-       (into cache)))
-
 (ann item-content [Item -> String])
 (defn item-content [item]
   (str (or (-> item :contents first :value)
