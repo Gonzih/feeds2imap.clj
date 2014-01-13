@@ -1,4 +1,4 @@
-(defproject feeds2imap "0.2.0"
+(defproject feeds2imap "0.2.1"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -16,9 +16,9 @@
                  [hiccup "1.0.4"]
                  [org.clojure/tools.logging "0.2.6"]
                  [log4j/log4j "1.2.17"]
-                 [digest "1.4.3"]]
+                 [digest "1.4.3"]
+                 [org.clojure/core.typed "0.2.10"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.10"]
-                                  [midje "1.6.0"]]
+  :profiles {:dev {:dependencies [[midje "1.6.0"]]
                    :plugins [[lein-midje "3.0.0"]]}}
   :min-lein-version "2.0.0")
