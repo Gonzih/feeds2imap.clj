@@ -43,7 +43,7 @@
     (bootstrap-file path initial)
     (edn/read-string (slurp path))))
 
-(ann write-file [String (U Cache (Folder Urls)) -> Any])
+(ann write-file [String (U String Cache (Folder Urls)) -> Any])
 (defn ^:private write-file [path data]
   (bootstrap-config-dir)
   (bootstrap-file (str (config-dir) path) data :force true))
@@ -61,8 +61,8 @@
 (defn imap []
   (read-or-create-file "imap.clj" (hash-map)))
 
-(ann urls (Fn [-> (Folder Urls)]
-              [(Folder Urls) -> Any]))
+(ann  urls (Fn [-> (Folder Urls)]
+               [(Folder Urls) -> Any]))
 (defn urls
   ([] (read-or-create-file "urls.clj" (hash-map)))
   ([data] (write-file "urls.clj" (with-out-str (pprint data)))))
