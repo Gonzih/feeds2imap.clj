@@ -173,10 +173,28 @@
                          IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
-(ann new-items [Cache (Folder Urls) -> (Folder Items)])
+(ann ^:no-check reduce-new-items [Cache (Folder Items) -> (HMap :mandatory {:new-items (Folder Items)
+                                                                 :cache Cache})])
+(defn reduce-new-items [cache parsed-feeds]
+  (reduce (fn [{:keys [cache new-items] :as val} [folder items]]
+            (reduce (fn [val item]
+                      (if (new? cache item)
+                        (-> val
+                            (update-in [:cache] (fn [old-cache] (conj old-cache (uniq-identifier item))))
+                            (update-in [:new-items folder] (fn [old-items] (conj old-items item))))
+                        val))
+                    val
+                    items))
+          {:cache cache :new-items {}}
+          parsed-feeds))
+
+
+
+(ann new-items [Cache (Folder Urls) -> (HMap :mandatory {:new-items (Folder Items)
+                                                         :cache Cache})])
 (defn new-items [cache urls]
   (->> urls
        (pmap-items parse)
        (map-items :entries)
        flatten-items
-       (filter-items (partial new? cache))))
+       (reduce-new-items cache)))

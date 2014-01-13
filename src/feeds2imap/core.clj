@@ -29,7 +29,7 @@
           _             (info "Found" (count cache) "items in cache.")
           urls          (settings/urls)
           _             (info "Found" (count urls) "folders in urls.")
-          new-items     (feeds/new-items cache urls)
+          {:keys [new-items cache]} (feeds/new-items cache urls)
           _             (info "Found" (count new-items) "new items.")
           emails        (feeds/to-emails imap-session from to new-items)]
 
@@ -40,7 +40,7 @@
           (info "Appending emails.")
           (folder/append-emails store emails)
           (info "Updating cache.")
-          (settings/write-items (feeds/mark-all-as-read cache new-items)))))
+          (settings/write-items cache))))
       (catch* [UnknownHostException NoRouteToHostException MessagingException] e
               (info "Exception in pull" e))))
 
