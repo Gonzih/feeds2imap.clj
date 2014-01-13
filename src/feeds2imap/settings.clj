@@ -4,7 +4,8 @@
             [clojure.tools.logging :refer [info error]]
             [clojure.core.typed :refer :all]
             [feeds2imap.types :refer :all]
-            [feeds2imap.annotations :refer :all])
+            [feeds2imap.annotations :refer :all]
+            [clojure.pprint :refer [pprint]])
   (:import  [java.io File]
             [clojure.lang Keyword]))
 
@@ -64,4 +65,4 @@
               [(Folder Urls) -> Any]))
 (defn urls
   ([] (read-or-create-file "urls.clj" (hash-map)))
-  ([data] (write-file "urls.clj" data)))
+  ([data] (write-file "urls.clj" (with-out-str (pprint data)))))
