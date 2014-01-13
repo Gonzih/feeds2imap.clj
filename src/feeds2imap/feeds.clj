@@ -78,9 +78,7 @@
    First try uri, then url, then link.
    Only if items listed above are empty use md5 of title + link + authors."
   [{:keys [title uri url link] :as item}]
-    (first (filter not-empty
-                   [uri url link
-                    (md5 (str title link (item-authors item)))])))
+  (or uri url link (md5 (str title link (item-authors item)))))
 
 (ann new? [Cache Item -> Boolean])
 (defn ^:private new?
