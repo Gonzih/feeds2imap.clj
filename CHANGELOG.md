@@ -1,3 +1,7 @@
+### 0.2.1
+
+* core.typed in main dependencies group.
+
 ### 0.2.0
 
 * Rename `feeds2imap.feeds/digest` -> `feeds2imap.feeds/uniq-identifier`.
