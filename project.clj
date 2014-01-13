@@ -19,5 +19,6 @@
                  [digest "1.4.3"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.10"]
-                                  [midje "1.6.0"]]}}
+                                  [midje "1.6.0"]]
+                   :plugins [[lein-midje "3.0.0"]]}}
   :min-lein-version "2.0.0")
