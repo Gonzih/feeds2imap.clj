@@ -23,14 +23,14 @@
 (defn pull []
   (try*
     (let [{:keys [username password host port to from]} (settings/imap)
-          imap-session  (imap/get-session (imap/get-props) nil)
-          imap-store    (imap/get-store imap-session)
           cache         (settings/read-items)
           _             (info "Found" (count cache) "items in cache.")
           urls          (settings/urls)
           _             (info "Found" (count urls) "folders in urls.")
           {:keys [new-items cache]} (feeds/new-items cache urls)
           _             (info "Found" (count new-items) "new items.")
+          imap-session  (imap/get-session (imap/get-props) nil)
+          imap-store    (imap/get-store imap-session)
           emails        (feeds/to-emails imap-session from to new-items)]
       (when-not (empty? new-items)
         (with-open [store imap-store]
