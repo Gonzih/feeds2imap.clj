@@ -175,8 +175,6 @@
           {:cache cache :new-items {}}
           parsed-feeds))
 
-
-
 (ann new-items [Cache (Folder Urls) -> (HMap :mandatory {:new-items (Folder Items)
                                                          :cache Cache})])
 (defn new-items [cache urls]
