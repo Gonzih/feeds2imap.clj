@@ -32,7 +32,6 @@
           {:keys [new-items cache]} (feeds/new-items cache urls)
           _             (info "Found" (count new-items) "new items.")
           emails        (feeds/to-emails imap-session from to new-items)]
-
       (when-not (empty? new-items)
         (with-open [store imap-store]
           (info "Connecting to imap host.")

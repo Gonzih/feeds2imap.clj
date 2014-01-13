@@ -15,7 +15,9 @@
                  [org.clojure/data.codec "0.1.0"]
                  [hiccup "1.0.4"]
                  [org.clojure/tools.logging "0.2.6"]
-                 [log4j/log4j "1.2.17"]]
+                 [log4j/log4j "1.2.17"]
+                 [digest "1.4.3"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.10"]]}}
+  :profiles {:dev {:dependencies [[org.clojure/core.typed "0.2.10"]
+                                  [midje "1.6.0"]]}}
   :min-lein-version "2.0.0")

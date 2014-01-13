@@ -9,7 +9,9 @@
             [feeds2imap.macro :refer :all]
             [clojure.core.typed :refer :all]
             [feeds2imap.types :refer :all]
-            [feeds2imap.annotations :refer :all])
+            [feeds2imap.annotations :refer :all]
+            [digest :refer [md5]]
+            [clojure.string :as s])
   (:import  [java.lang IllegalArgumentException]
             [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException]
@@ -19,6 +21,8 @@
             [clojure.lang Keyword]
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
+
+(ann ^:no-check digest/md5 [String -> String])
 
 (ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
                               [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
@@ -64,27 +68,24 @@
               (s/join " " fields)))]
     (s/join ", " (map format-author authors))))
 
-(non-nil-return MessageDigest/GetInstance :all)
-
-(ann ^:no-check md5 [String -> String])
-(defn md5 [^String string]
-  {:pre [(string? string)]}
-  (let [md (MessageDigest/getInstance "MD5")]
-    (str (.toString  (BigInteger. 1 (.digest md (.getBytes string "UTF-8"))) 16))))
-
 (ann ^:no-check uniq-identifier [Item -> String])
-(defn ^:private uniq-identifier
+(defn uniq-identifier
   "Generates unique identifier for item.
    First try uri, then url, then link.
    Only if items listed above are empty use md5 of title + link + authors."
   [{:keys [title uri url link] :as item}]
-  (or uri url link (md5 (str title link (item-authors item)))))
+  (s/replace (or uri url link (str title link (item-authors item)))
+             #"http://" "https://"))
+
+(ann md5-identifier [Item -> String])
+(defn md5-identifier [item]
+  (-> item uniq-identifier md5))
 
 (ann new? [Cache Item -> Boolean])
-(defn ^:private new?
+(defn new?
   "Looks up item in the cache"
   [cache item]
-  (not (contains? cache (uniq-identifier item))))
+  (not (contains? cache (md5-identifier item))))
 
 (ann item-content [Item -> String])
 (defn item-content [item]
@@ -161,14 +162,14 @@
     (parse-try url)))
 
 (ann ^:no-check reduce-new-items [Cache (Folder Items) -> (HMap :mandatory {:new-items (Folder Items)
-                                                                 :cache Cache})])
+                                                                            :cache Cache})])
 (defn reduce-new-items [cache parsed-feeds]
   (reduce (fn [{:keys [cache new-items] :as val} [folder items]]
-            (reduce (fn [val item]
+            (reduce (fn [{:keys [cache] :as val} item]
                       (if (new? cache item)
                         (-> val
-                            (update-in [:cache] (fn [old-cache] (conj old-cache (uniq-identifier item))))
-                            (update-in [:new-items folder] (fn [old-items] (conj old-items item))))
+                            (update-in [:cache] (fn [new-cache] (conj new-cache (md5-identifier item))))
+                            (update-in [:new-items folder] (fn [new-items] (conj new-items item))))
                         val))
                     val
                     items))
