@@ -11,8 +11,8 @@
   (:import  [clojure.lang Keyword]
             [java.io File]))
 
-(ann clojure.pprint/pprint [Any -> nil])
-(ann clojure.core/print-str [Any * -> String])
+(ann ^:no-check clojure.pprint/pprint [Any -> nil])
+(ann ^:no-check clojure.core/print-str [Any * -> String])
 
 (ann ^:no-check clojure.core/slurp [String -> String])
 (ann ^:no-check clojure.core/spit  [String String -> nil])

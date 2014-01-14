@@ -1,10 +1,10 @@
 (ns feeds2imap.feeds-test
   (:require [midje.sweet :refer :all]
             [feeds2imap.feeds :refer :all]
-            [clojure.core.typed :refer [check-ns]]))
+            [feeds2imap.utils :refer :all]))
 
 (fact "about types"
-  (check-ns 'feeds2imap.feeds) => :ok)
+  (check-ns-quiet 'feeds2imap.feeds) => :ok)
 
 (with-redefs [digest/md5 identity]
   (fact "about reduce-new-items-test"
