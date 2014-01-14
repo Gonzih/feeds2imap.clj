@@ -72,4 +72,10 @@
         (item-authors item) => "authors")))
   (fact "about uniq-identifier"
     (fact "it properly replaces http with https"
-      (uniq-identifier {:uri "http://a.com"}) => "https://a.com")))
+      (uniq-identifier {:uri "http://a.com"}) => "https://a.com"))
+  (fact "about md5-identifier"
+    (fact "it generate md5 of uniq-identifier"
+      (md5-identifier ...item...) => ...result...
+      (provided
+        (uniq-identifier ...item...)  => ...identifier...
+        (digest/md5 ...identifier...) => ...result...))))
