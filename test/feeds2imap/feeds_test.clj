@@ -32,3 +32,31 @@
     (fact "it detects item in cache"
       (new? #{"https://abc"} {:uri "https://cba"}) => true
       (new? #{"https://abc"} {:uri "https://abc"}) => false)))
+
+(let [run (partial into {})]
+  (let [urls {:a [{:uri "a"} {:uri "b"}]
+              :b [{:uri "c"} {:uri "d"}]}
+        map-result {:a ["a" "b"]
+                    :b ["c" "d"]}]
+    (fact "about map-items"
+      (fact "it maps function over items in folders"
+        (run (map-items :uri urls)) => map-result))
+    (fact "about pmap-items"
+      (fact "it maps function over items in folders"
+        (run (pmap-items :uri urls)) => map-result)))
+
+  (let [urls {:a [{:uri "a"} {:uri nil}]
+              :b [{:uri nil} {:uri "d"}]}
+        filter-result {:a [{:uri "a"}]
+                       :b [{:uri "d"}]}]
+    (fact "about filter-items"
+      (fact "it filters items in folders"
+        (run (filter-items :uri urls)) => filter-result)))
+
+  (let [urls {:a [[{:uri "a"}] [{:uri "b"}]]
+              :b [[{:uri "c"} {:uri "d"}]]}
+        flatten-result {:a [{:uri "a"} {:uri "b"}]
+                        :b [{:uri "c"} {:uri "d"}]}]
+    (fact "about flatten-items"
+      (fact "it flattens items in folders"
+        (run (flatten-items urls)) => flatten-result))))

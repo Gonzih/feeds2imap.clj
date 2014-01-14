@@ -24,19 +24,19 @@
 
 (ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
                               [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
-(defn ^:private map-items
+(defn map-items
   "Map function over items for each folder."
   [fun coll]
   (map (fn [[folder items]] [folder (map fun items)]) coll))
 
 (ann ^:no-check pmap-items [(Fn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
-(defn ^:private pmap-items
+(defn pmap-items
   "Map function over items for each folder using pmap."
   [fun coll]
   (pmap (fn [[folder items]] [folder (pmap fun items)]) coll))
 
 (ann ^:no-check filter-items [(Fn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
-(defn ^:private filter-items
+(defn filter-items
   "Filter items for each folder.
    Filter folders with non empty items collection."
   [fun coll]
@@ -47,7 +47,7 @@
                  (seq items)))))
 
 (ann ^:no-check flatten-items [(Folder UnflattenedItems) -> (Folder Items)])
-(defn ^:private flatten-items [items]
+(defn flatten-items [items]
   (map (fn [[folder items]]
         [folder (flatten items)])
        items))
