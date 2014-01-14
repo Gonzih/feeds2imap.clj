@@ -54,7 +54,7 @@
     (catch Exception e
       (info "Exception in pull call inside auto" e)))
   (let [delay-str (System/getenv "DELAY")
-        minutes (or delay-str (Integer. delay-str) 60)]
+        minutes (if delay-str (Integer. delay-str) 60)]
     (info "Sleeping in auto for" minutes "minutes")
     (sleep (* minutes 60 1000)))
   (recur))
