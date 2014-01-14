@@ -125,7 +125,7 @@
 (defn to-emails
   "Convert items to Messages."
   [session from to items]
-  (map-items (partial items-to-emails session from to) items)) ; (Folder Messages)
+  (map-items (partial items-to-emails session from to) items))
 
 (ann ^:no-check set-entries-authors [ParsedFeed -> ParsedFeed])
 (defn set-entries-authors [feed]
