@@ -49,8 +49,13 @@
 
 (ann ^:no-check auto [-> Any])
 (defn auto []
-  (pull)
-  (sleep (* 60 60 1000))
+  (try
+    (pull)
+    (catch Exception e
+      (info "Exception in pull call inside auto" e)))
+  (let [delay-str (Integer. (System/getenv "DELAY"))
+        minutes (or delay-str (Integer. delay-str) 60)]
+    (sleep (* minutes 60 1000)))
   (recur))
 
 (ann add [Keyword String -> Any])
