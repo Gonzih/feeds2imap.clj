@@ -1,7 +1,7 @@
 (ns feeds2imap.feeds-test
   (:require [midje.sweet :refer :all]
             [feeds2imap.feeds :refer :all]
-            [feeds2imap.utils :refer :all]))
+            [feeds2imap.test-helpers :refer :all]))
 
 (fact "about types"
   (check-ns-quiet 'feeds2imap.feeds) => :ok)

@@ -1,4 +1,4 @@
-(ns feeds2imap.utils
+(ns feeds2imap.test-helpers
   (:require [clojure.core.typed :refer [check-ns]]))
 
 (defn check-ns-quiet [ns-symbol]
