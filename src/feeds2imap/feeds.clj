@@ -22,8 +22,6 @@
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
 
-(ann ^:no-check digest/md5 [String -> String])
-
 (ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
                               [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
 (defn ^:private map-items

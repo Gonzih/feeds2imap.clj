@@ -6,7 +6,8 @@
             [feedparser-clj.core]
             [clojure.tools.logging]
             [clojure.edn]
-            [clojure.xml])
+            [clojure.xml]
+            [digest])
   (:import  [clojure.lang Keyword]
             [java.io File]))
 
@@ -28,5 +29,6 @@
 (ann ^:no-check clojure.tools.logging.impl/get-logger [Any * -> Any])
 (ann ^:no-check clojure.tools.logging/*logger-factory* [Any * -> Any])
 
-
 (ann ^:no-check clojure.xml/parse [File -> (Map Keyword XML)])
+
+(ann ^:no-check digest/md5 [String -> String])
