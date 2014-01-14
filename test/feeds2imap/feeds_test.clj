@@ -25,9 +25,6 @@
         (count cache) => 2
         (count (:a new-items)) => 1
         (count (:b new-items)) => 1)))
-  (fact "about uniq-identifier"
-    (fact "it properly replaces http with https"
-      (uniq-identifier {:uri "http://a.com"}) => "https://a.com"))
   (fact "about new?"
     (fact "it detects item in cache"
       (new? #{"https://abc"} {:uri "https://cba"}) => true
@@ -60,3 +57,19 @@
     (fact "about flatten-items"
       (fact "it flattens items in folders"
         (run (flatten-items urls)) => flatten-result))))
+
+(fact "about inuq-identifier"
+  (fact "it uses uri first if present"
+    (uniq-identifier {:uri "uri" :url "url" :link "link"}) => "uri")
+  (fact "it uses url if uri is nil"
+    (uniq-identifier {:uri nil :url "url" :link "link"}) => "url")
+  (fact "it uses link if uri and url are nil"
+    (uniq-identifier {:uri nil :url nil :link "link"}) => "link")
+  (fact "it generated authors if uri, url and link are nil"
+    (let [item {:uri nil :url nil :link nil}]
+      (uniq-identifier item) => "authors"
+      (provided
+        (item-authors item) => "authors")))
+  (fact "about uniq-identifier"
+    (fact "it properly replaces http with https"
+      (uniq-identifier {:uri "http://a.com"}) => "https://a.com")))

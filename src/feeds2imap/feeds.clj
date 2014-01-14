@@ -53,7 +53,7 @@
        items))
 
 (ann ^:no-check item-authors [Item -> String])
-(defn ^:private item-authors [{:keys [authors]}]
+(defn item-authors [{:keys [authors]}]
   "Format each author as
    \"Name <name[at]example.com> http://example.com/\".
    Multiple authors are coma-separated"
