@@ -13,7 +13,7 @@
                  [javax.mail/mail "1.4.7"]
                  [org.clojars.scsibug/feedparser-clj "0.4.0"]
                  [org.clojure/data.codec "0.1.0"]
-                 [hiccup "1.0.4"]
+                 [hiccup "1.0.5"]
                  [org.clojure/tools.logging "0.2.6"]
                  [log4j/log4j "1.2.17"]
                  [digest "1.4.3"]
