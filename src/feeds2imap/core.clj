@@ -51,6 +51,7 @@
 
 (ann ^:no-check pull-with-catch [-> Any])
 (defn pull-with-catch []
+  (info "Running pull in future")
   (try
     (pull)
     (catch Exception e
@@ -61,6 +62,7 @@
   (loop [previous-task nil]
     (when (and (future? previous-task)
                (not (future-done? previous-task)))
+      (info "Cancelling previous future")
       (future-cancel previous-task))
     (let [delay-str (System/getenv "DELAY")
           minutes (if delay-str (Integer. delay-str) 60)
