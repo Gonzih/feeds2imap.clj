@@ -1,3 +1,7 @@
+### 0.2.2
+
+* auto runs pull wrapped in catch statement in separate thread using futures and cancells previous task before launching new one.
+
 ### 0.2.1
 
 * core.typed in main dependencies group.
