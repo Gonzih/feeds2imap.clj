@@ -49,17 +49,25 @@
 (defn sleep [ms]
   (Thread/sleep ms))
 
-(ann ^:no-check auto [-> Any])
-(defn auto []
+(ann ^:no-check pull-with-catch [-> Any])
+(defn pull-with-catch []
   (try
     (pull)
     (catch Exception e
-      (info "Exception in pull call inside auto" e)))
-  (let [delay-str (System/getenv "DELAY")
-        minutes (if delay-str (Integer. delay-str) 60)]
-    (info "Sleeping in auto for" minutes "minutes")
-    (sleep (* minutes 60 1000)))
-  (recur))
+      (info "Exception in pull call inside auto" e))))
+
+(ann ^:no-check auto [-> Any])
+(defn auto []
+  (loop [previous-task nil]
+    (when (and (future? previous-task)
+               (not (future-done? previous-task)))
+      (future-cancel previous-task))
+    (let [delay-str (System/getenv "DELAY")
+          minutes (if delay-str (Integer. delay-str) 60)
+          current-task (future-call pull-with-catch)]
+      (info "Sleeping in auto for" minutes "minutes")
+      (sleep (* minutes 60 1000))
+      (recur current-task))))
 
 (ann add [Keyword String -> Any])
 (defn add [folder url]
