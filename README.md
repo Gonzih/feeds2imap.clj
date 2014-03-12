@@ -30,6 +30,25 @@ You can use `lein run` to run programm or you can generate jar with `lein uberja
 
 where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
 
+
+### Sample systemd user service
+
+```text ~/.config/systemd/user
+[Unit]
+Description=Clojure feeds reader
+
+[Service]
+ExecStart=java -jar feeds2imap.jar auto
+
+[Install]
+WantedBy=default.target
+```
+
+```sh
+systmectl --user enable feeds2imap.service
+systmectl --user start feeds2imap.service
+```
+
 ### License
 
 Copyright © 2013-2014 Max Gonzih gonzih @ gmail.com
