@@ -45,8 +45,8 @@ WantedBy=default.target
 ```
 
 ```sh
-systmectl --user enable feeds2imap.service
-systmectl --user start feeds2imap.service
+systemctl --user enable feeds2imap.service
+systemctl --user start feeds2imap.service
 ```
 
 All service output will be collected by journald.
