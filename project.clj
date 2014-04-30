@@ -9,7 +9,7 @@
                        feeds2imap.imap
                        feeds2imap.message
                        feeds2imap.settings]}
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [javax.mail/mail "1.4.7"]
                  [org.clojars.scsibug/feedparser-clj "0.4.0"]
                  [org.clojure/data.codec "0.1.0"]
