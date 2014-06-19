@@ -3,9 +3,11 @@
             [feeds2imap.feeds :refer :all]
             [feeds2imap.test-helpers :refer :all]))
 
+; core.typed
 (fact "about types"
   (check-ns-quiet 'feeds2imap.feeds) => :ok)
 
+; midje specs {{{
 (with-redefs [digest/md5 identity]
   (fact "about reduce-new-items-test"
     (fact "it properly calculates new items"
@@ -78,4 +80,4 @@
       (md5-identifier ...item...) => ...result...
       (provided
         (uniq-identifier ...item...)  => ...identifier...
-        (digest/md5 ...identifier...) => ...result...))))
+        (digest/md5 ...identifier...) => ...result...)))); }}}
