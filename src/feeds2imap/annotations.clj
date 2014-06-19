@@ -32,5 +32,5 @@
 
 (ann ^:no-check digest/md5 [String -> String])
 
-(ann ^:no-check push-thread-bindings [Any -> Any])
-(ann ^:no-check hash-map [Any * -> Map])
+(ann ^:no-check clojure.core/push-thread-bindings [Any -> Any])
+(ann ^:no-check clojure.core/hash-map [Any * -> Map])
