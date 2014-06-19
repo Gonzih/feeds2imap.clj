@@ -58,7 +58,7 @@
       (fact "it flattens items in folders"
         (run (flatten-items urls)) => flatten-result))))
 
-(fact "about inuq-identifier"
+(fact "about uniq-identifier"
   (fact "it uses uri first if present"
     (uniq-identifier {:uri "uri" :url "url" :link "link"}) => "uri")
   (fact "it uses url if uri is nil"
