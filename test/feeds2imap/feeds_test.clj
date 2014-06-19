@@ -1,7 +1,10 @@
 (ns feeds2imap.feeds-test
   (:require [midje.sweet :refer :all]
             [feeds2imap.feeds :refer :all]
-            [feeds2imap.test-helpers :refer :all]))
+            [feeds2imap.test-helpers :refer :all]
+            [clojure.test.check :as tc]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]))
 
 ; core.typed
 (fact "about types"
@@ -81,3 +84,15 @@
       (provided
         (uniq-identifier ...item...)  => ...identifier...
         (digest/md5 ...identifier...) => ...result...)))); }}}
+
+; test.check {{{
+(def new-for-items-not-in-cache
+  (prop/for-all [cache (gen/fmap set
+                                 (gen/list gen/string-alpha-numeric))
+                 item gen/string-alpha-numeric]
+    (= (new? cache item)
+       (not (contains? cache (md5-identifier item))))))
+
+(fact "new? should work for any string"
+  (:result (tc/quick-check 100 new-for-items-not-in-cache)) => true)
+; }}}

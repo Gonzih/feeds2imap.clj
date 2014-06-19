@@ -19,7 +19,8 @@
                  [digest "1.4.4"]
                  [org.clojure/core.typed "0.2.48"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[midje "1.6.3"]]
+  :profiles {:dev {:dependencies [[midje "1.6.3"]
+                                  [org.clojure/test.check "0.5.8"]]
                    :plugins [[lein-midje "3.0.0"]]}
              :uberjar {:aot :all}}
   :min-lein-version "2.0.0")
