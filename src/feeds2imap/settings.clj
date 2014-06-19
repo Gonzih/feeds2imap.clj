@@ -2,12 +2,11 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.tools.logging :refer [info error]]
-            [clojure.core.typed :refer :all]
+            [clojure.core.typed :refer [ann Any Set HMap]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]])
-  (:import  [java.io File]
-            [clojure.lang Keyword]))
+  (:import  [java.io File]))
 
 (ann default-config-dir [-> String])
 (defn ^:private default-config-dir []

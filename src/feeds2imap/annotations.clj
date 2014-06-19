@@ -1,5 +1,5 @@
 (ns feeds2imap.annotations
-  (:require [clojure.core.typed :refer :all]
+  (:require [clojure.core.typed :refer [ann Any Option Map Keyword]]
             [feeds2imap.types :refer :all]
             [clojure.pprint]
             [hiccup.compiler]
@@ -8,8 +8,7 @@
             [clojure.edn]
             [clojure.xml]
             [digest])
-  (:import  [clojure.lang Keyword]
-            [java.io File]))
+  (:import [java.io File]))
 
 (ann ^:no-check clojure.pprint/pprint [Any -> nil])
 (ann ^:no-check clojure.core/print-str [Any * -> String])
@@ -32,3 +31,6 @@
 (ann ^:no-check clojure.xml/parse [File -> (Map Keyword XML)])
 
 (ann ^:no-check digest/md5 [String -> String])
+
+(ann ^:no-check push-thread-bindings [Any -> Any])
+(ann ^:no-check hash-map [Any * -> Map])

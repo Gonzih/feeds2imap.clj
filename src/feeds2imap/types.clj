@@ -1,7 +1,6 @@
 (ns feeds2imap.types
-  (:require [clojure.core.typed :refer :all])
-  (:import [clojure.lang Keyword]
-           [javax.mail.internet MimeMessage]
+  (:require [clojure.core.typed :refer [def-alias Set HMap Seqable Vec Map Keyword Option Any]])
+  (:import [javax.mail.internet MimeMessage]
            [java.util Date]))
 
 (def-alias Cache (Set String))

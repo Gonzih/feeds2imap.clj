@@ -1,11 +1,10 @@
 (ns feeds2imap.opml
   (:require [clojure.pprint :refer [pprint]]
-            [clojure.core.typed :refer :all]
+            [clojure.core.typed :refer [ann Keyword Map Vec]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [clojure.xml])
-  (:import  [java.io File]
-            [clojure.lang Keyword]))
+  (:import  [java.io File]))
 
 (ann ^:no-check opml-find-tag [Keyword XML -> Keyword])
 (defn opml-find-tag

@@ -9,11 +9,10 @@
             [feeds2imap.annotations :refer :all]
             [clojure.tools.logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
-            [clojure.core.typed :refer :all]
+            [clojure.core.typed :refer [ann Any Keyword]]
             [clojure.java.io :refer [file writer]])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
-           [clojure.lang Keyword]
            [java.io File]
            [java.lang NullPointerException]))
 

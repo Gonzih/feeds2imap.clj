@@ -1,7 +1,7 @@
 (ns feeds2imap.imap
   (:require [feeds2imap.folder :as folder]
             [feeds2imap.message :as message]
-            [clojure.core.typed :refer :all])
+            [clojure.core.typed :refer [non-nil-return ann]])
   (:import [javax.mail Session Store Authenticator]
            [java.net UnknownHostException]
            [java.util Properties]))

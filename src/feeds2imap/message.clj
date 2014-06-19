@@ -1,5 +1,5 @@
 (ns feeds2imap.message
-  (:require [clojure.core.typed :refer :all]
+  (:require [clojure.core.typed :refer [ann non-nil-return]]
             [feeds2imap.types :refer :all])
   (:import [javax.mail Message$RecipientType Session]
            [javax.mail.internet MimeMessage InternetAddress MimeBodyPart]

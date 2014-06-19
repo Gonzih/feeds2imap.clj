@@ -7,7 +7,7 @@
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]]
             [feeds2imap.macro :refer :all]
-            [clojure.core.typed :refer :all]
+            [clojure.core.typed :refer [ann Map]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [digest :refer [md5]]
@@ -18,12 +18,11 @@
             [java.io IOException]
             [javax.mail Session]
             [javax.mail.internet MimeMessage]
-            [clojure.lang Keyword]
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
 
-(ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items]) (Folder ParsedFeed) -> (Folder UnflattenedItems)]
-                              [(Fn [Item -> Message]) (Folder Items) -> (Folder Messages)]))
+(ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items])   (Folder ParsedFeed) -> (Folder UnflattenedItems)]
+                              [(Fn [Item       -> Message]) (Folder Items)      -> (Folder Messages)]))
 (defn map-items
   "Map function over items for each folder."
   [fun coll]
