@@ -16,10 +16,10 @@
                  [hiccup "1.0.5"]
                  [org.clojure/tools.logging "0.3.0"]
                  [log4j/log4j "1.2.17"]
-                 [digest "1.4.4"]]
+                 [digest "1.4.4"]
+                 [org.clojure/core.typed "0.2.48"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[midje "1.6.3"]
-                                  [org.clojure/core.typed "0.2.48"]]
+  :profiles {:dev {:dependencies [[midje "1.6.3"]]
                    :plugins [[lein-midje "3.0.0"]]}
              :uberjar {:aot :all}}
   :min-lein-version "2.0.0")
