@@ -83,7 +83,8 @@
       (md5-identifier ...item...) => ...result...
       (provided
         (uniq-identifier ...item...)  => ...identifier...
-        (digest/md5 ...identifier...) => ...result...)))); }}}
+        (digest/md5 ...identifier...) => ...result...))))
+; }}}
 
 ; test.check {{{
 (def new-for-items-not-in-cache
