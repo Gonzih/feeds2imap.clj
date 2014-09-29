@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.tools.logging :refer [info error]]
-            [clojure.core.typed :refer [ann Any Set HMap]]
+            [clojure.core.typed :refer [ann Any Set HMap U IFn]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]])
@@ -34,7 +34,7 @@
       (.createNewFile file)
       (spit path (str initial)))))
 
-(ann ^:no-check read-or-create-file (Fn [String (Set String) -> Cache]
+(ann ^:no-check read-or-create-file (IFn [String (Set String) -> Cache]
                                         [String (HMap) -> (Folder Urls)]))
 (defn ^:private read-or-create-file [path initial]
   (let [path (str (config-dir) path)]
@@ -60,7 +60,7 @@
 (defn imap []
   (read-or-create-file "imap.clj" (hash-map)))
 
-(ann  urls (Fn [-> (Folder Urls)]
+(ann  urls (IFn [-> (Folder Urls)]
                [(Folder Urls) -> Any]))
 (defn urls
   ([] (read-or-create-file "urls.clj" (hash-map)))

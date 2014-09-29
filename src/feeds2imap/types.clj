@@ -1,36 +1,36 @@
 (ns feeds2imap.types
-  (:require [clojure.core.typed :refer [def-alias Set HMap Seqable Vec Map Keyword Option Any]])
+  (:require [clojure.core.typed :refer [defalias Set HMap Seqable Vec Map Keyword Option Any TFn]])
   (:import [javax.mail.internet MimeMessage]
            [java.util Date]))
 
-(def-alias Cache (Set String))
+(defalias Cache (Set String))
 
-(def-alias Item
+(defalias Item
   (HMap :mandatory {:authors (Seqable String)
                     :title String
                     :link String
                     :contents (Seqable (HMap :optional {:value String}))
                     :description (HMap :optional {:value String})}))
 
-(def-alias Items (Seqable Item))
-(def-alias UnflattenedItems (Seqable Items))
+(defalias Items (Seqable Item))
+(defalias UnflattenedItems (Seqable Items))
 
-(def-alias ParsedFeed
+(defalias ParsedFeed
   (HMap :mandatory {:entries Items}))
 
-(def-alias Message MimeMessage)
-(def-alias Messages (Seqable Message))
+(defalias Message MimeMessage)
+(defalias Messages (Seqable Message))
 
-(def-alias Urls (Vec String))
+(defalias Urls (Vec String))
 
-(def-alias Folder
+(defalias Folder
   (TFn [[x :variance :covariant]] (Map Keyword x)))
 
-(def-alias MessageMap
+(defalias MessageMap
   (HMap :mandatory {:from    String
                     :to      String
                     :subject String
                     :html    String}
         :optional  {:date (Option Date)}))
 
-(def-alias XML (Map Keyword Any))
+(defalias XML (Map Keyword Any))

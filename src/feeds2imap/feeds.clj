@@ -7,7 +7,7 @@
             [clojure.pprint :refer :all]
             [clojure.tools.logging :refer [info error]]
             [feeds2imap.macro :refer :all]
-            [clojure.core.typed :refer [ann Map]]
+            [clojure.core.typed :refer [ann Map IFn HMap]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [digest :refer [md5]]
@@ -21,20 +21,20 @@
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
 
-(ann ^:no-check map-items (Fn [(Fn [ParsedFeed -> Items])   (Folder ParsedFeed) -> (Folder UnflattenedItems)]
-                              [(Fn [Item       -> Message]) (Folder Items)      -> (Folder Messages)]))
+(ann ^:no-check map-items (IFn [(IFn [ParsedFeed -> Items])   (Folder ParsedFeed) -> (Folder UnflattenedItems)]
+                              [(IFn [Item       -> Message]) (Folder Items)      -> (Folder Messages)]))
 (defn map-items
   "Map function over items for each folder."
   [fun coll]
   (map (fn [[folder items]] [folder (map fun items)]) coll))
 
-(ann ^:no-check pmap-items [(Fn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
+(ann ^:no-check pmap-items [(IFn [String -> ParsedFeed]) (Folder Urls) -> (Folder ParsedFeed)])
 (defn pmap-items
   "Map function over items for each folder using pmap."
   [fun coll]
   (pmap (fn [[folder items]] [folder (pmap fun items)]) coll))
 
-(ann ^:no-check filter-items [(Fn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
+(ann ^:no-check filter-items [(IFn [Item -> Boolean]) (Folder Items) -> (Folder Items)])
 (defn filter-items
   "Filter items for each folder.
    Filter folders with non empty items collection."
