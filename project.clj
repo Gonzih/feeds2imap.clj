@@ -14,13 +14,13 @@
                  [org.clojars.scsibug/feedparser-clj "0.4.0"]
                  [org.clojure/data.codec "0.1.0"]
                  [hiccup "1.0.5"]
-                 [org.clojure/tools.logging "0.3.0"]
+                 [org.clojure/tools.logging "0.3.1"]
                  [log4j/log4j "1.2.17"]
                  [digest "1.4.4"]
                  [org.clojure/core.typed "0.2.48"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[midje "1.6.3"]
-                                  [org.clojure/test.check "0.5.8"]]
+                                  [org.clojure/test.check "0.5.9"]]
                    :plugins [[lein-midje "3.0.0"]]}
              :uberjar {:aot :all}}
   :min-lein-version "2.0.0")
