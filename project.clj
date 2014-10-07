@@ -17,7 +17,7 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [log4j/log4j "1.2.17"]
                  [digest "1.4.4"]
-                 [org.clojure/core.typed "0.2.68"]]
+                 [org.clojure/core.typed "0.2.71"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [org.clojure/test.check "0.5.9"]]
