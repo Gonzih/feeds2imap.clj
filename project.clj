@@ -1,6 +1,6 @@
 (defproject feeds2imap "0.2.4"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Pull RSS/Atom feeds to your IMAP folders with Clojure on JVM."
+  :url "https://github.com/Gonzih/feeds2imap.clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :core.typed {:check [feeds2imap.core
