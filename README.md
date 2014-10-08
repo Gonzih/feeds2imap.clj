@@ -51,6 +51,11 @@ systemctl --user start feeds2imap.service
 
 All service output will be collected by journald.
 
+### Logging
+
+Default log is stored at `~/.config/feeds2imap.clj/main.log`.
+You can change it by setting `-Dlog4.configuration=file:/path/to/log4j.properties` option for JVM.
+
 ### License
 
 Copyright © 2013-2014 Max Gonzih gonzih @ gmail.com
