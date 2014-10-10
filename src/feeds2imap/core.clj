@@ -6,8 +6,8 @@
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [feeds2imap.opml :refer [convert-opml]]
+            [feeds2imap.logging :refer [info error]]
             [feeds2imap.annotations :refer :all]
-            [clojure.tools.logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
             [clojure.core.typed :refer [ann Any Keyword]]
             [clojure.java.io :refer [file writer]])

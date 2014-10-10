@@ -1,7 +1,7 @@
 (ns feeds2imap.settings
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.tools.logging :refer [info error]]
+            [feeds2imap.logging :refer [info error]]
             [clojure.core.typed :refer [ann Any Set HMap U IFn]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]

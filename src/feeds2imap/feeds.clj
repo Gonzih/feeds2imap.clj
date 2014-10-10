@@ -5,7 +5,7 @@
             [clojure.data.codec.base64 :as b64]
             [clojure.string :as s]
             [clojure.pprint :refer :all]
-            [clojure.tools.logging :refer [info error]]
+            [feeds2imap.logging :refer [info error]]
             [feeds2imap.macro :refer :all]
             [clojure.core.typed :refer [ann Map IFn HMap]]
             [feeds2imap.types :refer :all]
