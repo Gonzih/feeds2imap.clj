@@ -14,9 +14,6 @@
                  [org.clojars.scsibug/feedparser-clj "0.4.0"]
                  [org.clojure/data.codec "0.1.0"]
                  [hiccup "1.0.5"]
-                 [org.clojure/tools.logging "0.3.1"]
-                 [org.apache.logging.log4j/log4j-api  "2.0.2"]
-                 [org.apache.logging.log4j/log4j-core "2.0.2"]
                  [digest "1.4.4"]
                  [org.clojure/core.typed "0.2.71"]]
   :main feeds2imap.core
