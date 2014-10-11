@@ -2,10 +2,21 @@
   (:require [clojure.tools.logging :as log]
             [clojure.core.typed :refer [ann Any]]))
 
+(def logger (agent nil))
+
+; (ann prn-stdout [[Any] -> nil])
+(defn prn-stdout [_ args]
+  (apply println args))
+
+; (ann prn-stderr [[Any] -> nil])
+(defn prn-stderr [_ args]
+  (binding [*out* *err*]
+    (apply println args)))
+
 (ann info [Any * -> nil])
-(defmacro info [& args]
-  `(log/info ~@args))
+(defn info [& args]
+  (send logger prn-stdout args))
 
 (ann error [Any * -> nil])
-(defmacro error [& args]
-  `(log/error ~@args))
+(defn error [& args]
+  (send logger prn-stderr args))
