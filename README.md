@@ -1,4 +1,4 @@
-## feeds2imap.clj [![License](http://img.shields.io/badge/license-EPL-blue.svg?style=flat)](https://www.eclipse.org/legal/epl-v10.html) [![Build Status](https://travis-ci.org/Gonzih/feeds2imap.clj.png?branch=master)](https://travis-ci.org/Gonzih/feeds2imap.clj) [![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.png)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
+## feeds2imap.clj [![License](http://img.shields.io/badge/license-EPL-blue.svg?style=flat)](https://www.eclipse.org/legal/epl-v10.html) [![Build Status](https://travis-ci.org/Gonzih/feeds2imap.clj.svg?branch=master)](https://travis-ci.org/Gonzih/feeds2imap.clj) [![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.png)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
 
 [![Clojars Project](http://clojars.org/feeds2imap/latest-version.svg)](http://clojars.org/feeds2imap)
 
