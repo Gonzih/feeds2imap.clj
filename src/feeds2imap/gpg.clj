@@ -7,7 +7,7 @@
 (ann gpg-program String)
 (def gpg-program "gpg")
 
-(ann ^:no-check gpg-programm [String * -> ShellResult])
+(ann ^:no-check gpg [String * -> ShellResult])
 (defn gpg
   "Shells out to (gpg-program) with the given arguments"
   [& args]
