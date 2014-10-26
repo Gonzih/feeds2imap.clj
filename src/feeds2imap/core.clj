@@ -10,8 +10,7 @@
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]]
             [clojure.core.typed :refer [ann Any Keyword]]
-            [clojure.core.match :refer [match]]
-            [clojure.java.io :refer [file writer]])
+            [clojure.core.match :refer [match]])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
            [java.io File]

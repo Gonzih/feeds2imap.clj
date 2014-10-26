@@ -3,7 +3,8 @@
             [clojure.core.typed :refer [ann Keyword Map Vec]]
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
-            [clojure.xml])
+            [clojure.xml]
+            [clojure.java.io :refer [file writer]])
   (:import  [java.io File]))
 
 (ann ^:no-check opml-find-tag [Keyword XML -> Keyword])
