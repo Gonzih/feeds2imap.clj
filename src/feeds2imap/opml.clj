@@ -61,3 +61,13 @@
         b (opml-find-tag :body x)
         m (opml-build-map (:content b))]
     m))
+
+(defn convert-and-print-from-file! [path]
+  (->> (File. ^String path)
+       convert-opml
+       pprint))
+
+(defn convert-and-write-to-file! [from to]
+  (let [sink (writer (file to))
+        data (convert-opml (File. ^String from))]
+    (pprint data sink)))

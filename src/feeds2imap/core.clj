@@ -5,11 +5,12 @@
             [feeds2imap.imap :as imap]
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
-            [feeds2imap.opml :refer [convert-opml]]
+            [feeds2imap.opml :as ompl]
             [feeds2imap.logging :refer [info error]]
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]]
             [clojure.core.typed :refer [ann Any Keyword]]
+            [clojure.core.match :refer [match]]
             [clojure.java.io :refer [file writer]])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
@@ -89,28 +90,15 @@
 
 (ann ^:no-check -main [Any -> Any])
 (defn -main
-  ([]
-    (pull)
-    (shutdown-agents-with-try))
-  ([command]
-    (case command
-          "auto" (auto)
-          "show" (show)
-          "pull" (pull))
-    (shutdown-agents-with-try))
-  ([command arg]
-     (case command
-       "imap" (case arg
-                "encrypt" (settings/encrypt-imap)
-                "decrypt" (settings/decrypt-imap))
-       "opml2clj" (->> (File. ^String arg)
-                       convert-opml
-                       pprint)))
-  ([command arg1 arg2]
-    (case command
-          "add" (do (add arg1 arg2) (show))
-          "opml2clj" (let [w (writer (file arg2))
-                           m (->> (File. ^String arg1)
-                                  convert-opml)]
-                       (pprint m w)))
-    (shutdown-agents-with-try)))
+  [& args]
+  (match args
+    [([] :seq)] (pull)
+    [(["pull"] :seq)] (pull)
+    [(["show"] :seq)] (show)
+    [(["auto"] :seq)] (auto)
+    [(["imap" "encrypt"]   :seq)] (settings/encrypt-imap!)
+    [(["imap" "decrypt"]   :seq)] (settings/decrypt-imap!)
+    [(["opml2clj" file]    :seq)] (ompl/convert-and-print-from-file!)
+    [(["add" folder url]   :seq)] (do (add folder url) (show))
+    [(["ompl2clj" from to] :seq)] (ompl/convert-and-write-to-file!)
+    :else (error "Can't handle arguments" args)))
