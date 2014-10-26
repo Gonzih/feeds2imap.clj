@@ -74,7 +74,7 @@
   (info "Writing" (count data) "items to cache.")
   (write-file "read-items.clj" data))
 
-(ann encrypted-imap [-> ImapConfiguration])
+(ann encrypted-imap [-> (U ImapConfiguration Boolean)])
 (defn encrypted-imap []
   (read-encrypted-file "imap.clj.gpg"))
 
@@ -82,7 +82,7 @@
 (defn unencrypted-imap []
   (read-or-create-file "imap.clj" (hash-map)))
 
-(ann imap [-> ImapConfiguration])
+(ann ^:no-check imap [-> ImapConfiguration])
 (defn imap []
   (or (encrypted-imap)
       (unencrypted-imap)))
