@@ -1,5 +1,5 @@
 (ns feeds2imap.types
-  (:require [clojure.core.typed :refer [defalias Set HMap Seqable Vec Map Keyword Option Any TFn]])
+  (:require [clojure.core.typed :refer [defalias Set HMap Seqable Vec Map Keyword Option Any TFn Num]])
   (:import [javax.mail.internet MimeMessage]
            [java.util Date]))
 
@@ -34,3 +34,16 @@
         :optional  {:date (Option Date)}))
 
 (defalias XML (Map Keyword Any))
+
+(defalias ImapConfiguration
+  (HMap :mandatory {:host String
+                    :port Num
+                    :username String
+                    :password String}
+        :optional {:to String
+                   :from String}))
+
+(defalias ShellResult
+  (HMap :mandatory {:exit Num}
+        :optional {:err String
+                   :out String}))
