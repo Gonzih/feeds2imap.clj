@@ -63,13 +63,13 @@
         m (opml-build-map (:content b))]
     m))
 
-(ann ^:no-check convert-and-print-from-file! [File -> Any])
+(ann ^:no-check convert-and-print-from-file! [File -> nil])
 (defn convert-and-print-from-file! [path]
   (->> (File. ^String path)
        convert-opml
        pprint))
 
-(ann ^:no-check convert-and-print-from-file! [File File -> Any])
+(ann ^:no-check convert-and-print-from-file! [File File -> nil])
 (defn convert-and-write-to-file! [from to]
   (let [sink (writer (file to))
         data (convert-opml (File. ^String from))]
