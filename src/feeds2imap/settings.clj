@@ -28,7 +28,8 @@
       (.mkdirs file))))
 
 (ann bootstrap-file [String Any & :optional {:force Boolean} -> Any])
-(defn ^:private bootstrap-file [path initial & {:keys [force] :or {force false}}]
+(defn ^:private bootstrap-file
+  [path initial & {:keys [force] :or {force false}}]
   (let [file (file path)]
     (when (or force (not (.exists file)))
       (.createNewFile file)
