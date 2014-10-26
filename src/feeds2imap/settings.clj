@@ -91,7 +91,7 @@
 (defn ^:private handle-gpg-result [{:keys [out err exit]}]
   (if (pos? exit)
       (do
-        (error "Could not run gpg on" path)
+        (error "Error executing gpg command:")
         (error err)
         (error "Make sure gpg is installed and works.")
         false)
