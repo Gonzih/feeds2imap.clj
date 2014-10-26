@@ -6,7 +6,8 @@
             [feedparser-clj.core]
             [clojure.edn]
             [clojure.xml]
-            [digest])
+            [digest]
+            [clojure.java.shell])
   (:import [java.io File]))
 
 (ann ^:no-check clojure.pprint/pprint [Any -> nil])
@@ -26,3 +27,5 @@
 
 (ann ^:no-check clojure.core/push-thread-bindings [Any -> Any])
 (ann ^:no-check clojure.core/hash-map [Any * -> Map])
+
+(ann ^:no-check clojure.java.shell/sh [String * -> ShellResult])

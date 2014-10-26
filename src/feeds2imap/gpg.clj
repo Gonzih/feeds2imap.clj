@@ -1,6 +1,7 @@
 (ns feeds2imap.gpg
   (:require [clojure.java.shell :as shell]
             [clojure.core.typed :refer [ann]]
+            [feeds2imap.annotations :refer :all]
             [feeds2imap.types :refer :all]))
 
 (ann gpg-program String)
