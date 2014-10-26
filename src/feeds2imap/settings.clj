@@ -35,7 +35,7 @@
       (spit path (str initial)))))
 
 (ann ^:no-check read-or-create-file (IFn [String (Set String) -> Cache]
-                                        [String (HMap) -> (Folder Urls)]))
+                                         [String (HMap) -> (Folder Urls)]))
 (defn ^:private read-or-create-file [path initial]
   (let [path (str (config-dir) path)]
     (bootstrap-config-dir)
