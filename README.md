@@ -28,6 +28,8 @@ You can use `lein run` to run programm or you can generate jar with `lein uberja
 * `LAUNCH-COMMAND auto` - pull new items every 1 hour in the loop.
 * `LAUNCH-COMMAND show` - show feeds list (url.clj file content).
 * `LAUNCH-COMMAND add folder-name feed-url` - add url to feeds file to the folder folder-name.
+* `LAUNCH-COMMAND imap encrypt` - encrypt imap.clj file using gpg
+* `LAUNCH-COMMAND imap decrypt` - decrypt imap.clj file using gpg
 * `LAUNCH-COMMAND opml2clj filename.xml [path/to/urls.clj]` - convert OPML file to `urls.clj` format
 
 where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
