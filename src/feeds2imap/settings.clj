@@ -75,17 +75,60 @@
   (write-file "read-items.clj" data))
 
 (ann encrypted-imap [-> (U ImapConfiguration Boolean)])
-(defn encrypted-imap []
+(defn ^:private encrypted-imap []
   (read-encrypted-file "imap.clj.gpg"))
 
 (ann unencrypted-imap [-> ImapConfiguration])
-(defn unencrypted-imap []
+(defn ^:private unencrypted-imap []
   (read-or-create-file "imap.clj" (hash-map)))
 
 (ann ^:no-check imap [-> ImapConfiguration])
 (defn imap []
   (or (encrypted-imap)
       (unencrypted-imap)))
+
+(ann ^:no-check rm [ShellResult -> Boolean])
+(defn ^:private handle-gpg-result [{:keys [out err exit]}]
+  (if (pos? exit)
+      (do
+        (error "Could not decrypt credentials from" path)
+        (error err)
+        (error "Make sure gpg is installed and works.")
+        false)
+      (do
+        (info out)
+        true)))
+
+(ann ^:no-check rm [String -> Any])
+(defn ^:private rm [path]
+  (let [file (File. path)]
+    (when (.exists file)
+      (.delete file))))
+
+(ann encrypted-imap-path [-> String])
+(defn ^:private encrypted-imap-path [] (str (config-dir) "imap.clj.gpg"))
+
+(ann unencrypted-imap-path [-> String])
+(defn ^:private unencrypted-imap-path [] (str (config-dir) "imap.clj"))
+
+(ann ^:no-check encrypt-imap [-> Any])
+(defn encrypt-imap []
+  (let [result (gpg "--quiet" "--batch"
+                    "--ecrypt"
+                    "--output" (encrypted-imap-path)
+                    (unencrypted-imap-path))]
+    (when (handle-gpg-result result)
+      (rm (unencrypted-imap-path)))))
+
+(ann ^:no-check decrypt-imap [-> Any])
+(defn decrypt-imap []
+  (let [result (gpg "--quiet" "--batch"
+                    "--decrypt"
+                    "--output" (unencrypted-imap-path)
+                    (encrypted-imap-path))]
+    (when (handle-gpg-result result)
+      (rm (encrypted-imap-path)))))
+
 
 (ann urls (IFn [-> (Folder Urls)]
                [(Folder Urls) -> Any]))
