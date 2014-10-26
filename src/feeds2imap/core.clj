@@ -100,6 +100,9 @@
     (shutdown-agents-with-try))
   ([command arg]
      (case command
+       "imap" (case arg
+                "encrypt" (settings/encrypt-imap)
+                "decrypt" (settings/decrypt-imap))
        "opml2clj" (->> (File. ^String arg)
                        convert-opml
                        pprint)))
