@@ -92,6 +92,8 @@
   (if (pos? exit)
       (do
         (error "Error executing gpg command:")
+        (error "exit code is" exit)
+        (error out)
         (error err)
         (error "Make sure gpg is installed and works.")
         false)
@@ -111,20 +113,29 @@
 (ann unencrypted-imap-path [-> String])
 (defn ^:private unencrypted-imap-path [] (str (config-dir) "imap.clj"))
 
+(ann encryption-recipient [-> String])
+(defn ^:private encryption-recipient []
+  (str (System/getenv "FEEDS_ENC_RECIPIENT")))
+
 (ann ^:no-check encrypt-imap! [-> Any])
 (defn encrypt-imap! []
-  (let [result (gpg "--quiet" "--batch"
-                    "--ecrypt"
+  (let [result (gpg "--quiet"
+                    "--batch"
+                    "--recipient" (encryption-recipient)
+                    "--encrypt"
                     "--output" (encrypted-imap-path)
+                    "--"
                     (unencrypted-imap-path))]
     (when (handle-gpg-result result)
       (rm! (unencrypted-imap-path)))))
 
 (ann ^:no-check decrypt-imap! [-> Any])
 (defn decrypt-imap! []
-  (let [result (gpg "--quiet" "--batch"
+  (let [result (gpg "--quiet"
+                    "--batch"
                     "--decrypt"
                     "--output" (unencrypted-imap-path)
+                    "--"
                     (encrypted-imap-path))]
     (when (handle-gpg-result result)
       (rm! (encrypted-imap-path)))))

@@ -20,3 +20,7 @@
 (ann error [Any * -> (Agent1 nil)])
 (defn error [& args]
   (send logger prn-stderr args))
+
+(ann wait [-> Boolean])
+(defn wait []
+  (await-for 3000 logger))

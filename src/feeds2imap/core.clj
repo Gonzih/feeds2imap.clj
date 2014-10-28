@@ -6,7 +6,7 @@
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [feeds2imap.opml :as ompl]
-            [feeds2imap.logging :refer [info error]]
+            [feeds2imap.logging :as logging :refer [info error]]
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]]
             [clojure.core.typed :refer [ann Any Keyword]]
@@ -101,4 +101,5 @@
     [(["add" folder url]   :seq)] (do (add folder url) (show))
     [(["ompl2clj" from to] :seq)] (ompl/convert-and-write-to-file!)
     :else (error "Can't handle arguments" args))
+  (logging/wait)
   (shutdown-agents-with-try))
