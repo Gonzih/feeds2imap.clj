@@ -50,8 +50,11 @@
 (defn ^:private read-encrypted-file [path]
   (bootstrap-config-dir)
   (let [path (str (config-dir) path)
-        {:keys [out err exit]} (gpg "--quiet" "--batch"
-                                    "--decrypt" "--" path)]
+        {:keys [out err exit]} (gpg "--quiet"
+                                    "--batch"
+                                    "--decrypt"
+                                    "--"
+                                    path)]
     (if (pos? exit)
       (do
         (error "Could not decrypt credentials from" path)
