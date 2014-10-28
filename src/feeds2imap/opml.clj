@@ -69,8 +69,8 @@
        convert-opml
        pprint))
 
-(ann ^:no-check convert-and-print-from-file! [File File -> nil])
+(ann ^:no-check convert-and-write-to-file! [String String -> nil])
 (defn convert-and-write-to-file! [from to]
   (let [sink (writer (file to))
-        data (convert-opml (File. ^String from))]
+        data (convert-opml (file from))]
     (pprint data sink)))

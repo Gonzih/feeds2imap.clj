@@ -1,5 +1,5 @@
 (ns feeds2imap.annotations
-  (:require [clojure.core.typed :refer [ann Any Option Map Keyword]]
+  (:require [clojure.core.typed :refer [ann Any Option Map Keyword U IFn]]
             [feeds2imap.types :refer :all]
             [clojure.pprint]
             [hiccup.compiler]
@@ -7,10 +7,12 @@
             [clojure.edn]
             [clojure.xml]
             [digest]
-            [clojure.java.shell])
-  (:import [java.io File]))
+            [clojure.java.shell]
+            [clojure.java.io])
+  (:import [java.io File BufferedWriter]))
 
-(ann ^:no-check clojure.pprint/pprint [Any -> nil])
+(ann ^:no-check clojure.pprint/pprint (IFn [Any -> nil]
+                                           [Any BufferedWriter -> nil]))
 (ann ^:no-check clojure.core/print-str [Any * -> String])
 
 (ann ^:no-check clojure.core/slurp [String -> String])
@@ -29,3 +31,9 @@
 (ann ^:no-check clojure.core/hash-map [Any * -> Map])
 
 (ann ^:no-check clojure.java.shell/sh [String * -> ShellResult])
+
+(ann ^:no-check clojure.java.io/file   [String -> File])
+(ann ^:no-check clojure.java.io/writer (IFn [File -> BufferedWriter]
+                                            [String -> BufferedWriter]))
+
+(ann ^:no-check clojure.edn/read-string [(U nil String) -> Any])
