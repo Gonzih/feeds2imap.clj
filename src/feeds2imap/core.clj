@@ -90,16 +90,16 @@
 (ann ^:no-check -main [Any -> Any])
 (defn -main
   [& args]
-  (match [args]
-    [([] :seq)] (pull)
-    [(["pull"] :seq)] (pull)
-    [(["show"] :seq)] (show)
-    [(["auto"] :seq)] (auto)
-    [(["imap" "encrypt"]   :seq)] (settings/encrypt-imap!)
-    [(["imap" "decrypt"]   :seq)] (settings/decrypt-imap!)
-    [(["opml2clj" file]    :seq)] (ompl/convert-and-print-from-file!)
-    [(["add" folder url]   :seq)] (do (add folder url) (show))
-    [(["ompl2clj" from to] :seq)] (ompl/convert-and-write-to-file!)
+  (match args
+    ([] :seq) (pull)
+    (["pull"] :seq) (pull)
+    (["show"] :seq) (show)
+    (["auto"] :seq) (auto)
+    (["imap" "encrypt"]   :seq) (settings/encrypt-imap!)
+    (["imap" "decrypt"]   :seq) (settings/decrypt-imap!)
+    (["opml2clj" file]    :seq) (ompl/convert-and-print-from-file!)
+    (["add" folder url]   :seq) (do (add folder url) (show))
+    (["ompl2clj" from to] :seq) (ompl/convert-and-write-to-file!)
     :else (error "Can't handle arguments" args))
   (logging/wait)
   (shutdown-agents-with-try))
