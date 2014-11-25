@@ -16,7 +16,7 @@
                  [hiccup "1.0.5"]
                  [digest "1.4.4"]
                  [org.clojure/core.typed "0.2.72"]
-                 [org.clojure/core.match "0.2.1"]]
+                 [org.clojure/core.match "0.2.2"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [org.clojure/test.check "0.5.9"]]
