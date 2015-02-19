@@ -19,7 +19,7 @@
                  [org.clojure/core.match "0.2.2"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[midje "1.6.3"]
-                                  [org.clojure/test.check "0.5.9"]]
-                   :plugins [[lein-midje "3.0.0"]]}
+                                  [org.clojure/test.check "0.7.0"]]
+                   :plugins [[lein-midje "3.1.3"]]}
              :uberjar {:aot :all}}
   :min-lein-version "2.0.0")
