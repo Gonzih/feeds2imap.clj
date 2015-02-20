@@ -49,19 +49,20 @@
 (ann read-encrypted-file [String -> (U ImapConfiguration Boolean)])
 (defn ^:private read-encrypted-file [path]
   (bootstrap-config-dir)
-  (let [path (str (config-dir) path)
-        {:keys [out err exit]} (gpg "--quiet"
+  (let [path (str (config-dir) path)]
+    (when (.exists (file path))
+      (let [{:keys [out err exit]} (gpg "--quiet"
                                     "--batch"
                                     "--decrypt"
                                     "--"
                                     path)]
-    (if (pos? exit)
-      (do
-        (error "Could not decrypt credentials from" path)
-        (error err)
-        (error "Make sure gpg is installed and works.")
-        false)
-      (edn/read-string out))))
+        (if (pos? exit)
+          (do
+            (error "Could not decrypt credentials from" path)
+            (error err)
+            (error "Make sure gpg is installed and works.")
+            false)
+          (edn/read-string out))))))
 
 (ann write-file [String (U String Cache (Folder Urls)) -> Any])
 (defn ^:private write-file [path data]
