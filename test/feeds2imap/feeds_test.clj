@@ -20,8 +20,8 @@
               => {:b [{:uri "c"}] :a [{:uri "z"}]})
         (fact "it properly updates cache"
               (set (keys (:cache (reduce-new-items {"a" 1 "b" 2}
-                                               {:b [{:uri "c"} {:uri "d"}]
-                                                :a [{:uri "b"} {:uri "z"}]}))))
+                                                   {:b [{:uri "c"} {:uri "d"}]
+                                                    :a [{:uri "b"} {:uri "z"}]}))))
               => #{"a" "b" "c" "d" "z"})
         (fact "it preffers https urls in cache"
               (let [{:keys [cache new-items]}
