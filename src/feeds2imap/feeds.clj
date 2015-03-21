@@ -165,7 +165,7 @@
             (reduce (fn [{:keys [cache] :as val} item]
                       (if (new? cache item)
                         (-> val
-                            (update-in [:cache] (fn [new-cache] (conj new-cache (md5-identifier item))))
+                            (update-in [:cache] (fn [new-cache] (assoc new-cache (md5-identifier item) (System/currentTimeMillis))))
                             (update-in [:new-items folder] (fn [new-items] (conj new-items item))))
                         val))
                     val

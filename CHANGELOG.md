@@ -1,3 +1,9 @@
+### 0.3.0
+
+* changed format of cache to hmap
+* added automatic cache cleanup functionality
+* please remove your `~/.config/feeds2imap.clj/read-items.clj` if you experience any issues after update
+
 ### 0.2.2
 
 * auto runs pull wrapped in catch statement in separate thread using futures and cancells previous task before launching new one.

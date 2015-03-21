@@ -3,7 +3,7 @@
   (:import [javax.mail.internet MimeMessage]
            [java.util Date]))
 
-(defalias Cache (Set String))
+(defalias Cache (Map String Num))
 
 (defalias Item
   (HMap :mandatory {:authors (Seqable String)

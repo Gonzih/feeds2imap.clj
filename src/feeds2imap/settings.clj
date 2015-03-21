@@ -71,12 +71,25 @@
 
 (ann read-items [-> (Set String)])
 (defn read-items []
-  (read-or-create-file "read-items.clj" (hash-set)))
+  (read-or-create-file "read-items.clj" (hash-map)))
+
+(ann clean-up-items [Cache -> Cache])
+(defn clean-up-items [data]
+  (info "Cleaning up cache of" (count data) "items")
+  (let [current-millis (System/currentTimeMillis)
+                  ; 30 days
+        threshold 2592000000]
+    (->> data
+         (filter (fn [[checksum t]]
+                   (< (- current-millis t)
+                      threshold)))
+         (into {}))))
 
 (ann write-items [Cache -> Any])
 (defn write-items [data]
-  (info "Writing" (count data) "items to cache.")
-  (write-file "read-items.clj" data))
+  (let [clean-data (clean-up-items data)]
+    (info "Writing" (count clean-data) "items to cache.")
+    (write-file "read-items.clj" clean-data)))
 
 (ann encrypted-imap [-> (U ImapConfiguration Boolean)])
 (defn ^:private encrypted-imap []
