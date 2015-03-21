@@ -14,19 +14,19 @@
 (with-redefs [digest/md5 identity]
   (fact "about reduce-new-items-test"
         (fact "it properly calculates new items"
-              (:new-items (reduce-new-items #{"a" "b"}
+              (:new-items (reduce-new-items {"a" 1 "b" 2}
                                             {:b [{:uri "c"}]
                                              :a [{:uri "b"} {:uri "z"}]}))
               => {:b [{:uri "c"}] :a [{:uri "z"}]})
         (fact "it properly updates cache"
-              (:cache (reduce-new-items #{"a" "b"}
-                                        {:b [{:uri "c"} {:uri "d"}]
-                                         :a [{:uri "b"} {:uri "z"}]}))
+              (set (keys (:cache (reduce-new-items {"a" 1 "b" 2}
+                                               {:b [{:uri "c"} {:uri "d"}]
+                                                :a [{:uri "b"} {:uri "z"}]}))))
               => #{"a" "b" "c" "d" "z"})
         (fact "it preffers https urls in cache"
               (let [{:keys [cache new-items]}
-                    (reduce-new-items #{} {:b [{:uri "http://b.com"} {:uri "https://b.com"}]
-                                           :a [{:uri "http://a.com"} {:uri "https://a.com"}]})]
+                    (reduce-new-items {} {:b [{:uri "http://b.com"} {:uri "https://b.com"}]
+                                          :a [{:uri "http://a.com"} {:uri "https://a.com"}]})]
                 (count cache) => 2
                 (count (:a new-items)) => 1
                 (count (:b new-items)) => 1)))
@@ -88,8 +88,7 @@
 
 ; test.check {{{
 (def new-for-items-not-in-cache
-  (prop/for-all [cache (gen/fmap set
-                                 (gen/list gen/string-alpha-numeric))
+  (prop/for-all [cache (gen/map gen/string-alpha-numeric gen/pos-int)
                  item gen/string-alpha-numeric]
                 (= (new? cache item)
                    (not (contains? cache (md5-identifier item))))))

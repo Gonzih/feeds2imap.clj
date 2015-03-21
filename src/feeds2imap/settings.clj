@@ -73,7 +73,7 @@
 (defn read-items []
   (read-or-create-file "read-items.clj" (hash-map)))
 
-(ann clean-up-items [Cache -> Cache])
+(ann ^:no-check clean-up-items [Cache -> Cache])
 (defn clean-up-items [data]
   (info "Cleaning up cache of" (count data) "items")
   (let [current-millis (System/currentTimeMillis)
