@@ -22,7 +22,7 @@
             [java.util Date]))
 
 (ann ^:no-check map-items (IFn [(IFn [ParsedFeed -> Items])   (Folder ParsedFeed) -> (Folder UnflattenedItems)]
-                              [(IFn [Item       -> Message]) (Folder Items)      -> (Folder Messages)]))
+                               [(IFn [Item       -> Message]) (Folder Items)      -> (Folder Messages)]))
 (defn map-items
   "Map function over items for each folder."
   [fun coll]
@@ -48,7 +48,7 @@
 (ann ^:no-check flatten-items [(Folder UnflattenedItems) -> (Folder Items)])
 (defn flatten-items [items]
   (map (fn [[folder items]]
-        [folder (flatten items)])
+         [folder (flatten items)])
        items))
 
 (ann ^:no-check item-authors [Item -> String])
@@ -110,10 +110,10 @@
         from+   (s/join " " [(encoded-word authors) (str "<" from ">")])
         pubdate (item-pubdate item)
         html (html [:table
-                     [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
-                             (when (seq authors)
-                               [:tr [:td authors [:hr]]])
-                             [:tr [:td content]]]])]
+                    [:tbody [:tr [:td [:a {:href link} title] [:hr]]]
+                     (when (seq authors)
+                       [:tr [:td authors [:hr]]])
+                     [:tr [:td content]]]])]
     {:from from+ :to to :date pubdate :subject title :html html}))
 
 (ann items-to-emails [Session String String Item -> Message])
@@ -145,17 +145,17 @@
           (parse-try
             ([url] (parse-try url 1 :no-reason))
             ([url n-try reason]
-              (log-try url n-try reason)
-              (try*
-                (if (< n-try 3)
-                  (-> url parse-feed set-entries-authors)
-                  {:entries ()})
-                (catch* [ConnectException
-                         NoRouteToHostException
-                         UnknownHostException
-                         ParsingFeedException
-                         IllegalArgumentException
-                         IOException] e (parse-try url (inc n-try) e)))))]
+             (log-try url n-try reason)
+             (try*
+              (if (< n-try 3)
+                (-> url parse-feed set-entries-authors)
+                {:entries ()})
+              (catch* [ConnectException
+                       NoRouteToHostException
+                       UnknownHostException
+                       ParsingFeedException
+                       IllegalArgumentException
+                       IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
 (ann ^:no-check reduce-new-items [Cache (Folder Items) -> (HMap :mandatory {:new-items (Folder Items)

@@ -21,28 +21,28 @@
 (ann ^:no-check pull [-> Any])
 (defn pull []
   (try*
-    (let [{:keys [username password host port to from]} (settings/imap)
-          cache         (settings/read-items)
-          _             (info "Found" (count cache) "items in cache.")
-          urls          (settings/urls)
-          _             (info "Found" (count urls) "folders in urls.")
-          {:keys [new-items cache]} (feeds/new-items cache urls)
-          _             (info "Found" (count new-items)
-                              "folder(s) with" (->> new-items (map second) flatten count)
-                              "new item(s) in total.")
-          imap-session  (imap/get-session (imap/get-props) nil)
-          imap-store    (imap/get-store imap-session)
-          emails        (feeds/to-emails imap-session from to new-items)]
-      (when-not (empty? new-items)
-        (with-open [store imap-store]
-          (info "Connecting to imap host.")
-          (imap/connect store host port username password)
-          (info "Appending emails.")
-          (folder/append-emails store emails)
-          (info "Updating cache.")
-          (settings/write-items cache))))
-      (catch* [UnknownHostException NoRouteToHostException MessagingException] e
-              (info "Exception in pull" e))))
+   (let [{:keys [username password host port to from]} (settings/imap)
+         cache         (settings/read-items)
+         _             (info "Found" (count cache) "items in cache.")
+         urls          (settings/urls)
+         _             (info "Found" (count urls) "folders in urls.")
+         {:keys [new-items cache]} (feeds/new-items cache urls)
+         _             (info "Found" (count new-items)
+                             "folder(s) with" (->> new-items (map second) flatten count)
+                             "new item(s) in total.")
+         imap-session  (imap/get-session (imap/get-props) nil)
+         imap-store    (imap/get-store imap-session)
+         emails        (feeds/to-emails imap-session from to new-items)]
+     (when-not (empty? new-items)
+       (with-open [store imap-store]
+         (info "Connecting to imap host.")
+         (imap/connect store host port username password)
+         (info "Appending emails.")
+         (folder/append-emails store emails)
+         (info "Updating cache.")
+         (settings/write-items cache))))
+   (catch* [UnknownHostException NoRouteToHostException MessagingException] e
+           (info "Exception in pull" e))))
 
 (ann sleep [Long -> nil])
 (defn sleep [ms]
@@ -80,9 +80,9 @@
 (ann ^:no-check shutdown-agents-with-try [-> Any])
 (defn shutdown-agents-with-try []
   (try*
-    (shutdown-agents)
-    (catch* [NullPointerException] e
-            (info "Exception while shuting down agents" e))))
+   (shutdown-agents)
+   (catch* [NullPointerException] e
+           (info "Exception while shuting down agents" e))))
 
 (ann show [-> nil])
 (defn show [] (pprint (settings/urls)))

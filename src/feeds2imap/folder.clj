@@ -31,9 +31,9 @@
 (ann ^:no-check append-emails [Store (Map Keyword (Seqable MimeMessage)) -> Any])
 (defn append-emails [store emails]
   (doall
-    (pmap (fn [[folder emails]]
-            (let [folder-str (str "RSS/" (name folder))]
-              (create store folder-str)
-              (info "Appending" (count emails) "emails in to the IMAP folder" folder-str)
-              (append store folder-str emails)))
-          emails)))
+   (pmap (fn [[folder emails]]
+           (let [folder-str (str "RSS/" (name folder))]
+             (create store folder-str)
+             (info "Appending" (count emails) "emails in to the IMAP folder" folder-str)
+             (append store folder-str emails)))
+         emails)))

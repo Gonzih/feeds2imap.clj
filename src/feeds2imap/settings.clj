@@ -52,10 +52,10 @@
   (let [path (str (config-dir) path)]
     (when (.exists (file path))
       (let [{:keys [out err exit]} (gpg "--quiet"
-                                    "--batch"
-                                    "--decrypt"
-                                    "--"
-                                    path)]
+                                        "--batch"
+                                        "--decrypt"
+                                        "--"
+                                        path)]
         (if (pos? exit)
           (do
             (error "Could not decrypt credentials from" path)
@@ -107,16 +107,16 @@
 (ann ^:no-check handle-gpg-result [ShellResult -> Boolean])
 (defn ^:private handle-gpg-result [{:keys [out err exit]}]
   (if (pos? exit)
-      (do
-        (error "Error executing gpg command:")
-        (error "exit code is" exit)
-        (error out)
-        (error err)
-        (error "Make sure gpg is installed and works.")
-        false)
-      (do
-        (info out)
-        true)))
+    (do
+      (error "Error executing gpg command:")
+      (error "exit code is" exit)
+      (error out)
+      (error err)
+      (error "Make sure gpg is installed and works.")
+      false)
+    (do
+      (info out)
+      true)))
 
 (ann ^:no-check rm! [String -> Any])
 (defn ^:private rm! [path]

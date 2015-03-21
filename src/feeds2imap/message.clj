@@ -24,5 +24,5 @@
       (.setSubject subject)
       (.setContent html "text/html; charset=utf-8"))
     (when date
-        (.setSentDate message date))
+      (.setSentDate message date))
     message))
