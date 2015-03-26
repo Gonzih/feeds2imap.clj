@@ -59,7 +59,7 @@ All service output will be collected by journald.
 
 ### License
 
-Copyright © 2013-2014 Max Gonzih gonzih @ gmail.com
+Copyright © 2013-2015 Max Gonzih gonzih @ gmail.com
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
