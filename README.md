@@ -21,7 +21,9 @@ The format of this file is as follows:
 ```
 
 ### Usage
-You can use `lein run` to run programm or you can generate jar with `lein uberjar` and run programm with `java -jar <path-to-jar>`.
+You can use [lein plugin](https://github.com/Gonzih/lein-feeds2imap).
+
+Or you can use `lein run` to run programm or you can generate jar with `lein uberjar` and run programm with `java -jar <path-to-jar>`.
 
 * `LAUNCH-COMMAND` - pull new items.
 * `LAUNCH-COMMAND pull` - pull new items.
@@ -33,8 +35,6 @@ You can use `lein run` to run programm or you can generate jar with `lein uberja
 * `LAUNCH-COMMAND opml2clj filename.xml [path/to/urls.clj]` - convert OPML file to `urls.clj` format
 
 where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
-
-Also you can use [lein plugin](https://github.com/Gonzih/lein-feeds2imap).
 
 ### Sample systemd user service (~/.config/systemd/user)
 
