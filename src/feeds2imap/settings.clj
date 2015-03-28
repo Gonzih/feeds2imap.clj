@@ -75,7 +75,7 @@
 
 (ann ^:no-check clean-up-items [Cache -> Cache])
 (defn clean-up-items [data]
-  (info "Cleaning up cache of" (count data) "items")
+  (info "Cleaning up cache of" (count data) "items.")
   (let [current-millis (System/currentTimeMillis)
                   ; 30 days
         threshold 2592000000]
