@@ -2,6 +2,8 @@
 
 [![Clojars Project](http://clojars.org/feeds2imap/latest-version.svg)](http://clojars.org/feeds2imap)
 
+![clojure feeds reader](https://raw.githubusercontent.com/Gonzih/feeds2imap.clj/master/demo.gif)
+
 RSS/Atom reader implemented in Clojure.
 It stores new items in the mail folders using IMAP APPEND command (java.mail framework).
 
