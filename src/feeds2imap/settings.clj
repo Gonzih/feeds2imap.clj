@@ -77,8 +77,8 @@
 (defn clean-up-items [data]
   (info "Cleaning up cache of" (count data) "items.")
   (let [current-millis (System/currentTimeMillis)
-                  ; 30 days
-        threshold 2592000000]
+                  ;  365 days
+        threshold (* 365 24 60 60 1000)]
     (->> data
          (filter (fn [[checksum t]]
                    (< (- current-millis t)
