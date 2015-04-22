@@ -1,3 +1,8 @@
+### 0.3.1
+
+* Since some feeds keep everything in let's try increasing lifetime of cache for 1 year.
+  * maybe cache lifetime should be removed completely
+
 ### 0.3.0
 
 * changed format of cache to hmap
