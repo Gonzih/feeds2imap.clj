@@ -14,7 +14,7 @@
             [clojure.string :as s])
   (:import  [java.lang IllegalArgumentException]
             [java.security MessageDigest]
-            [java.net NoRouteToHostException ConnectException UnknownHostException]
+            [java.net NoRouteToHostException ConnectException UnknownHostException HttpURLConnection URL]
             [java.io IOException]
             [javax.mail Session]
             [javax.mail.internet MimeMessage]
@@ -148,7 +148,10 @@
              (log-try url n-try reason)
              (try*
               (if (< n-try 3)
-                (-> url parse-feed set-entries-authors)
+                (-> (doto (cast HttpURLConnection (-> url URL. .openConnection))
+                          (.setRequestProperty  "User-Agent" "feeds2imap.clj/0.3 (+https://github.com/Gonzih/feeds2imap.clj)"))
+                    parse-feed
+                    set-entries-authors)
                 {:entries ()})
               (catch* [ConnectException
                        NoRouteToHostException
