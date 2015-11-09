@@ -18,7 +18,7 @@
                  [org.clojure/core.typed "0.2.72"]
                  [org.clojure/core.match "0.2.2"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[midje "1.6.3"]
+  :profiles {:dev {:dependencies [[midje "1.8.2"]
                                   [org.clojure/test.check "0.7.0"]]
                    :plugins [[lein-midje "3.1.3"]]}
              :uberjar {:aot :all}}
