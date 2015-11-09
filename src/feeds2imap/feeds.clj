@@ -136,6 +136,13 @@
         entries (map set-authors (:entries feed))]
     (assoc feed :entries entries)))
 
+(ann ^:no-check fetch [String -> ParsedFeed])
+(defn fetch [url]
+  (-> (doto (cast HttpURLConnection (-> url URL. .openConnection))
+        (.setRequestProperty  "User-Agent" "feeds2imap.clj/0.3 (+https://github.com/Gonzih/feeds2imap.clj)"))
+      parse-feed
+      set-entries-authors))
+
 (ann ^:no-check parse [String -> ParsedFeed])
 (defn parse [url]
   (letfn [(log-try [url n-try reason]
@@ -148,10 +155,7 @@
              (log-try url n-try reason)
              (try*
               (if (< n-try 3)
-                (-> (doto (cast HttpURLConnection (-> url URL. .openConnection))
-                          (.setRequestProperty  "User-Agent" "feeds2imap.clj/0.3 (+https://github.com/Gonzih/feeds2imap.clj)"))
-                    parse-feed
-                    set-entries-authors)
+                (fetch url)
                 {:entries ()})
               (catch* [ConnectException
                        NoRouteToHostException
