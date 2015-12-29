@@ -18,8 +18,8 @@
                  [org.clojure/core.typed "0.2.72"]
                  [org.clojure/core.match "0.2.2"]]
   :main feeds2imap.core
-  :profiles {:dev {:dependencies [[midje "1.8.2" :exclusions [org.clojure/tools.namespace org.clojure/core.unify]]
-                                  [org.clojure/test.check "0.8.2"]]
+  :profiles {:dev {:dependencies [[midje "1.8.3" :exclusions [org.clojure/tools.namespace org.clojure/core.unify]]
+                                  [org.clojure/test.check "0.9.0"]]
                    :plugins [[lein-midje "3.2"]]}
              :uberjar {:aot :all}}
   :min-lein-version "2.0.0")
