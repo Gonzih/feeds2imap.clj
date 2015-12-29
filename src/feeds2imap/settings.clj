@@ -7,7 +7,8 @@
             [feeds2imap.types :refer :all]
             [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]])
-  (:import  [java.io File]))
+  (:import  [java.io File]
+            [java.lang RuntimeException]))
 
 (ann default-config-dir [-> String])
 (defn ^:private default-config-dir []
@@ -44,7 +45,11 @@
   (let [path (str (config-dir) path)]
     (bootstrap-config-dir)
     (bootstrap-file path initial)
-    (edn/read-string (slurp path))))
+    (try
+      (edn/read-string (slurp path))
+      (catch RuntimeException e
+        (error (str "RuntimeException while reading " path ": " (.getMessage e)))
+        (throw e)))))
 
 (ann read-encrypted-file [String -> (U ImapConfiguration Boolean)])
 (defn ^:private read-encrypted-file [path]
