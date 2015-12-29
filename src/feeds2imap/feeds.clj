@@ -100,11 +100,16 @@
 (defn item-pubdate [item]
   (or (:updated-date item) (:published-date item)))
 
+(ann escape-title [String -> String])
+(defn escape-title [title]
+  (s/replace title #"/\r?\n|\r/" " "))
+
 (ann to-email-map [String String Item -> MessageMap])
 (defn to-email-map
   "Convert item to map for Message construction."
   [from to item]
-  (let [{:keys [title link]} item
+  (let [{:keys [link]} item
+        title (-> item :title str escape-title)
         authors (item-authors item)
         content (item-content item)
         from+   (s/join " " [(encoded-word authors) (str "<" from ">")])
