@@ -1,4 +1,4 @@
-(defproject feeds2imap "0.3.2"
+(defproject feeds2imap "0.3.3"
   :description "Pull RSS/Atom feeds to your IMAP folders with Clojure on JVM."
   :url "https://github.com/Gonzih/feeds2imap.clj"
   :license {:name "Eclipse Public License"
