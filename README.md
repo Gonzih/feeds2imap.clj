@@ -1,4 +1,4 @@
-## feeds2imap.clj [![License](http://img.shields.io/badge/license-EPL-blue.svg?style=flat)](https://www.eclipse.org/legal/epl-v10.html) [![Build Status](https://travis-ci.org/Gonzih/feeds2imap.clj.svg?branch=master)](https://travis-ci.org/Gonzih/feeds2imap.clj) [![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj) [![Downloads](https://jarkeeper.com/Gonzih/feeds2imap.clj/downloads.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
+## feeds2imap.clj [![License](http://img.shields.io/badge/license-MIT.svg?style=flat)](https://github.com/Gonzih/feeds2imap.clj/blob/master/LICENSE.md) [![Build Status](https://travis-ci.org/Gonzih/feeds2imap.clj.svg?branch=master)](https://travis-ci.org/Gonzih/feeds2imap.clj) [![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj) [![Downloads](https://jarkeeper.com/Gonzih/feeds2imap.clj/downloads.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
 
 [![Clojars Project](http://clojars.org/feeds2imap/latest-version.svg)](http://clojars.org/feeds2imap)
 
@@ -61,9 +61,9 @@ All service output will be collected by journald.
 
 ### License
 
-Copyright © 2013-2015 Max Gonzih gonzih @ gmail.com
+Copyright © 2013-2016 Max Gonzih gonzih @ gmail.com
 
-Distributed under the Eclipse Public License, the same as Clojure.
+Distributed under the MIT license.
 
 ### Thanks
 Thanks to Greg Hendershott for original idea implemented in Racket
