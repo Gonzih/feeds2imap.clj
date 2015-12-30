@@ -47,7 +47,7 @@ where `LAUNCH-COMMAND = lein run / lein trampoline run / java -jar jarfile.jar`.
 Description=Clojure feeds reader
 
 [Service]
-ExecStart=java -jar feeds2imap.jar auto
+ExecStart=lein feeds2imap auto
 
 [Install]
 WantedBy=default.target
