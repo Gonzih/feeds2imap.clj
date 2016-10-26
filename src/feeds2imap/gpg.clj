@@ -1,13 +1,12 @@
 (ns feeds2imap.gpg
   (:require [clojure.java.shell :as shell]
-            [clojure.core.typed :refer [ann]]
-            [feeds2imap.annotations :refer :all]
-            [feeds2imap.types :refer :all]))
+            [clojure.spec :as s]))
 
-(ann gpg-program String)
 (def gpg-program "gpg")
 
-(ann ^:no-check gpg [String * -> ShellResult])
+(s/fdef gpg
+        :args (s/* :feeds2imap.types/string)
+        :ret :feeds2imap.types/shell-result)
 (defn gpg
   "Shells out to (gpg-program) with the given arguments"
   [& args]
@@ -16,7 +15,10 @@
     (catch java.io.IOException e
       {:exit 1 :err (.getMessage e)})))
 
-(ann gpg-available? [-> Boolean])
+(s/fdef gpg-available?
+        :args (s/cat)
+        :ret :feeds2imap.types/boolean)
+
 (defn gpg-available?
   "Verifies (gpg-program) exists"
   []

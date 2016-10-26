@@ -5,4 +5,4 @@ jdk:
 
 language: clojure
 lein: lein2
-script: lein2 with-profile dev trampoline midje
+script: env LEIN_JVM_OPTS="-Xms512m -Xmx2024m" NUM_TESTS=30 lein2 with-profile dev trampoline test

@@ -1,19 +1,25 @@
 (ns feeds2imap.message
-  (:require [clojure.core.typed :refer [ann non-nil-return]]
-            [feeds2imap.types :refer :all])
+  (:require [clojure.spec :as s])
   (:import [javax.mail Message$RecipientType Session]
            [javax.mail.internet MimeMessage InternetAddress MimeBodyPart]
            [java.util Date]))
 
-(non-nil-return javax.mail.Message$RecipientType/TO :all)
+(s/def ::session (partial instance? Session))
+(s/def ::recipient-to (partial instance? Message$RecipientType))
 
-(ann recipient-type-to [-> Message$RecipientType])
+(s/fdef recipient-type-to
+        :args (s/cat)
+        :ret ::recipient-to)
+
 (defn ^Message$RecipientType recipient-type-to
   []
   {:post [%]}
   (Message$RecipientType/TO))
 
-(ann from-map [Session MessageMap -> Message])
+(s/fdef from-map
+        :args (s/cat :session ::session :message :feeds2imap.types/message)
+        :ret :feeds2imap.types/mime-message)
+
 (defn ^MimeMessage from-map
   "Create message from map."
   [^Session session {:keys [from ^String to subject html date]}]
