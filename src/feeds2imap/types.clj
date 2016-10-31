@@ -1,49 +1,87 @@
 (ns feeds2imap.types
-  (:require [clojure.core.typed :refer [defalias Set HMap Seqable Vec Map Keyword Option Any TFn Num]])
+  (:require [clojure.spec :as s]
+            [clojure.spec.gen :as gen])
   (:import [javax.mail.internet MimeMessage]
+           [javax.mail Session]
            [java.util Date]))
 
-(defalias Cache (Map String Num))
+(s/def ::int  int?)
+(s/def ::string  string?)
+(s/def ::keyword keyword?)
+(s/def ::boolean boolean?)
 
-(defalias Item
-  (HMap :mandatory {:authors (Seqable String)
-                    :title String
-                    :link String
-                    :contents (Seqable (HMap :optional {:value String}))
-                    :description (HMap :optional {:value String})}))
+(s/def ::type  ::string)
+(s/def ::value ::string)
+(s/def ::title ::string)
+(s/def ::link  ::string)
+(s/def ::email (s/nilable ::string))
+(s/def ::name  (s/nilable ::string))
+(s/def ::uri   (s/nilable ::string))
 
-(defalias Items (Seqable Item))
-(defalias UnflattenedItems (Seqable Items))
+(s/def ::author (s/keys :opt-un [::email ::name ::uri]))
 
-(defalias ParsedFeed
-  (HMap :mandatory {:entries Items}))
+(s/def ::authors (s/coll-of ::author))
 
-(defalias Message MimeMessage)
-(defalias Messages (Seqable Message))
+(s/def ::cache (s/map-of ::string ::int))
 
-(defalias Urls (Vec String))
+(s/def ::optional-value (s/keys :opt-un [::value ::type]))
 
-(defalias Folder
-  (TFn [[x :variance :covariant]] (Map Keyword x)))
+(s/def ::contents (s/coll-of ::optional-value))
+(s/def ::description ::optional-value)
 
-(defalias MessageMap
-  (HMap :mandatory {:from    String
-                    :to      String
-                    :subject String
-                    :html    String}
-        :optional  {:date (Option Date)}))
+(s/def ::date (s/nilable inst?))
+(s/def ::published-date ::date)
+(s/def ::updated-date ::date)
 
-(defalias XML (Map Keyword Any))
+(s/def ::item (s/keys :req-un [::authors ::title ::link ::contents ::description]
+                      :opt-un [::published-date ::updated-date]))
 
-(defalias ImapConfiguration
-  (HMap :mandatory {:host String
-                    :port Num
-                    :username String
-                    :password String}
-        :optional {:to String
-                   :from String}))
+(s/def ::items (s/coll-of ::item))
+(s/def ::entries ::items)
+(s/def ::unflattened-items (s/coll-of ::items))
 
-(defalias ShellResult
-  (HMap :mandatory {:exit Num}
-        :optional {:err String
-                   :out String}))
+(s/def ::parsed-feed (s/keys :req-un [::entries]))
+(s/def ::parsed-feeds (s/map-of ::keyword (s/* ::parsed-feed)))
+
+(s/def ::mime-message (partial instance? MimeMessage))
+(s/def ::mime-messages (s/coll-of ::message))
+
+(s/def ::mail-session (partial instance? Session))
+
+(s/def ::urls (s/coll-of ::url))
+
+(s/def ::from ::string)
+(s/def ::to ::string)
+(s/def ::subject ::string)
+(s/def ::html ::string)
+(s/def ::host ::string)
+(s/def ::port ::int)
+(s/def ::username ::string)
+(s/def ::password ::string)
+
+(s/def ::message (s/keys :req-un [::from ::to ::subject ::html]
+                         :opt-un [::date]))
+
+
+(s/def ::xml (s/map-of keyword? ::string))
+
+(s/def ::imap-configuration (s/keys :req-un [::host ::port ::username ::password]
+                                    :opt-un [::to ::from]))
+
+(s/def ::exit ::int)
+(s/def ::err ::string)
+(s/def ::out ::string)
+
+(s/def ::shell-result (s/keys :req-un [::exit]
+                              :opt-un [::err ::out]))
+
+
+(defn url-gen []
+  (gen/elements ["http://blog.gonzih.me/index.xml"]))
+
+(s/def ::url
+  (s/spec string? :gen url-gen))
+
+(s/def ::folder-of-urls  (s/map-of ::keyword ::urls))
+(s/def ::folder-of-items (s/map-of ::keyword ::items))
+(s/def ::folder-of-unflattened-items (s/map-of ::keyword ::unflattened-items))

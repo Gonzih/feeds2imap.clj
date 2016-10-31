@@ -1,98 +1,76 @@
 (ns feeds2imap.feeds-test
-  (:require [midje.sweet :refer :all]
-            [feeds2imap.feeds :refer :all]
-            [feeds2imap.test-helpers :refer :all]
-            [clojure.test.check :as tc]
+  (:require [feeds2imap.feeds :refer :all]
+            [feeds2imap.test-helpers :refer [spec-fn]]
+            [clojure.spec :as s]
+            [clojure.spec.test :as stest]
+            [clojure.test :refer [deftest is]]
             [clojure.test.check.generators :as gen]
-            [clojure.test.check.properties :as prop]))
+            [clojure.test.check.properties :as prop]
+            [clojure.test.check.clojure-test :refer [defspec]]))
 
-; core.typed
-(fact "about types"
-      (check-ns-quiet 'feeds2imap.feeds) => :ok)
+(deftest testing-specs-no-sideffects
+  (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.feeds)
+                      `parse `fetch `items-to-emails `new-items)]
+    (is (spec-fn fname))))
 
-; midje specs {{{
-(with-redefs [digest/md5 identity]
-  (fact "about reduce-new-items-test"
-        (fact "it properly calculates new items"
-              (:new-items (reduce-new-items {"a" 1 "b" 2}
-                                            {:b [{:uri "c"}]
-                                             :a [{:uri "b"} {:uri "z"}]}))
-              => {:b [{:uri "c"}] :a [{:uri "z"}]})
-        (fact "it properly updates cache"
-              (set (keys (:cache (reduce-new-items {"a" 1 "b" 2}
-                                                   {:b [{:uri "c"} {:uri "d"}]
-                                                    :a [{:uri "b"} {:uri "z"}]}))))
-              => #{"a" "b" "c" "d" "z"})
-        (fact "it preffers https urls in cache"
-              (let [{:keys [cache new-items]}
-                    (reduce-new-items {} {:b [{:uri "http://b.com"} {:uri "https://b.com"}]
-                                          :a [{:uri "http://a.com"} {:uri "https://a.com"}]})]
-                (count cache) => 2
-                (count (:a new-items)) => 1
-                (count (:b new-items)) => 1)))
-  (fact "about new?"
-        (fact "it detects item in cache"
-              (new? #{"https://abc"} {:uri "https://cba"}) => true
-              (new? #{"https://abc"} {:uri "https://abc"}) => false)))
+(deftest testing-specs-with-sideffects
+  (let [parse-memo (memoize feeds2imap.feeds/parse)]
+    (with-redefs [feeds2imap.feeds/parse parse-memo]
+      (doseq [fname [`parse `parse `new-items]]
+        (is (spec-fn fname))))))
 
-(let [run (partial into {})]
-  (let [urls {:a [{:uri "a"} {:uri "b"}]
-              :b [{:uri "c"} {:uri "d"}]}
-        map-result {:a ["a" "b"]
-                    :b ["c" "d"]}]
-    (fact "about map-items"
-          (fact "it maps function over items in folders"
-                (run (map-items :uri urls)) => map-result))
-    (fact "about pmap-items"
-          (fact "it maps function over items in folders"
-                (run (pmap-items :uri urls)) => map-result)))
+(deftest reduce-new-items-test
+  (with-redefs [digest/md5 identity]
+    (is (= (:new-items (reduce-new-items {"a" 1 "b" 2}
+                                         {:b [{:uri "c"}]
+                                          :a [{:uri "b"} {:uri "z"}]}))
+           {:b [{:uri "c"}] :a [{:uri "z"}]}))
+    (is (= (set (keys (:cache (reduce-new-items {"a" 1 "b" 2}
+                                                {:b [{:uri "c"} {:uri "d"}]
+                                                 :a [{:uri "b"} {:uri "z"}]}))))
+           #{"a" "b" "c" "d" "z"}))
+    (let [{:keys [cache new-items]}
+          (reduce-new-items {} {:b [{:uri "http://b.com"} {:uri "https://b.com"}]
+                                :a [{:uri "http://a.com"} {:uri "https://a.com"}]})]
+      (is (= 2 (count cache)))
+      (is (= 1 (count (:a new-items))))
+      (is (= 1 (count (:b new-items)))))
 
-  (let [urls {:a [{:uri "a"} {:uri nil}]
-              :b [{:uri nil} {:uri "d"}]}
-        filter-result {:a [{:uri "a"}]
-                       :b [{:uri "d"}]}]
-    (fact "about filter-items"
-          (fact "it filters items in folders"
-                (run (filter-items :uri urls)) => filter-result)))
+    (is (new? #{"https://abc"} {:uri "https://cba"}))
+    (is (not (new? #{"https://abc"} {:uri "https://abc"})))))
 
-  (let [urls {:a [[{:uri "a"}] [{:uri "b"}]]
-              :b [[{:uri "c"} {:uri "d"}]]}
-        flatten-result {:a [{:uri "a"} {:uri "b"}]
-                        :b [{:uri "c"} {:uri "d"}]}]
-    (fact "about flatten-items"
-          (fact "it flattens items in folders"
-                (run (flatten-items urls)) => flatten-result))))
+(deftest pmap-test
+  (let [run (partial into {})]
+    (let [urls {:a [{:uri "a"} {:uri "b"}]
+                :b [{:uri "c"} {:uri "d"}]}
+          map-result {:a ["a" "b"]
+                      :b ["c" "d"]}]
+      (is (= (run (map-items :uri urls)) map-result))
+      (is (= (run (pmap-items :uri urls)))) map-result)
 
-(fact "about uniq-identifier"
-      (fact "it uses uri first if present"
-            (uniq-identifier {:uri "uri" :url "url" :link "link"}) => "uri")
-      (fact "it uses url if uri is nil"
-            (uniq-identifier {:uri nil :url "url" :link "link"}) => "url")
-      (fact "it uses link if uri and url are nil"
-            (uniq-identifier {:uri nil :url nil :link "link"}) => "link")
-      (fact "it generated authors if uri, url and link are nil"
-            (let [item {:uri nil :url nil :link nil}]
-              (uniq-identifier item) => "authors"
-              (provided
-               (item-authors item) => "authors")))
-      (fact "about uniq-identifier"
-            (fact "it properly replaces http with https"
-                  (uniq-identifier {:uri "http://a.com"}) => "https://a.com"))
-      (fact "about md5-identifier"
-            (fact "it generate md5 of uniq-identifier"
-                  (md5-identifier ...item...) => ...result...
-                  (provided
-                   (uniq-identifier ...item...)  => ...identifier...
-                   (digest/md5 ...identifier...) => ...result...))))
-; }}}
+    (let [urls {:a [{:uri "a"} {:uri nil}]
+                :b [{:uri nil} {:uri "d"}]}
+          filter-result {:a [{:uri "a"}]
+                         :b [{:uri "d"}]}]
+      (is (= (run (filter-items :uri urls)) filter-result)))
 
-; test.check {{{
-(def new-for-items-not-in-cache
+    (let [urls {:a [[{:uri "a"}] [{:uri "b"}]]
+                :b [[{:uri "c"} {:uri "d"}]]}
+          flatten-result {:a [{:uri "a"} {:uri "b"}]
+                          :b [{:uri "c"} {:uri "d"}]}]
+      (is (= (run (flatten-items urls)) flatten-result)))))
+
+(deftest uniq-identifier-test
+  (is (= "uri" (uniq-identifier {:uri "uri" :url "url" :link "link"})))
+  (is (= "url" (uniq-identifier {:uri nil :url "url" :link "link"})))
+  (is (= "link" (uniq-identifier {:uri nil :url nil :link "link"})))
+  (let [item {:uri nil :url nil :link nil :authors [{:name "authors"}]}]
+    (is (= "authors" (uniq-identifier item))))
+  (is (= "https://a.com" (uniq-identifier {:uri "http://a.com"}))))
+
+(defspec new?-spec
+  1000
   (prop/for-all [cache (gen/map gen/string-alpha-numeric gen/pos-int)
                  item gen/string-alpha-numeric]
                 (= (new? cache item)
                    (not (contains? cache (md5-identifier item))))))
-
-(fact "new? should work for any string"
-      (:result (tc/quick-check 100 new-for-items-not-in-cache)) => true)
-; }}}

@@ -1,16 +1,16 @@
 (ns feeds2imap.core
   (:gen-class)
-  (:require [feeds2imap.feeds :as feeds]
+  (:require [feeds2imap.types :as types]
+            [feeds2imap.feeds :as feeds]
             [feeds2imap.settings :as settings]
             [feeds2imap.imap :as imap]
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [feeds2imap.opml :as ompl]
             [feeds2imap.logging :as logging :refer [info error]]
-            [feeds2imap.annotations :refer :all]
             [clojure.pprint :refer [pprint]]
-            [clojure.core.typed :refer [ann Any Keyword]]
-            [clojure.core.match :refer [match]])
+            [clojure.core.match :refer [match]]
+            [clojure.spec :as s])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
            [java.io File]
@@ -18,7 +18,6 @@
 
 (set! *warn-on-reflection* true)
 
-(ann ^:no-check pull [-> Any])
 (defn pull []
   (try*
    (let [{:keys [username password host port to from]} (settings/imap)
@@ -44,11 +43,9 @@
    (catch* [UnknownHostException NoRouteToHostException MessagingException] e
            (info "Exception in pull" e))))
 
-(ann sleep [Long -> nil])
 (defn sleep [ms]
   (Thread/sleep ms))
 
-(ann ^:no-check pull-with-catch [-> Any])
 (defn pull-with-catch []
   (info "Running pull in future")
   (try
@@ -56,7 +53,6 @@
     (catch Exception e
       (info "Exception in pull call inside auto" e))))
 
-(ann ^:no-check auto [-> Any])
 (defn auto []
   (loop [previous-task nil]
     (when (and (future? previous-task)
@@ -70,24 +66,21 @@
       (sleep (* minutes 60 1000))
       (recur current-task))))
 
-(ann add [Keyword String -> Any])
 (defn add [folder url]
+  {:pre [(s/valid? :feeds2imap.types/keyword folder) (s/valid? :feeds2imap.types/string url)]}
   (let [folder (keyword folder)
         urls (settings/urls)
         folder-urls (or (get urls folder) [])]
     (settings/urls (assoc urls folder (conj folder-urls url)))))
 
-(ann ^:no-check shutdown-agents-with-try [-> Any])
 (defn shutdown-agents-with-try []
   (try*
    (shutdown-agents)
    (catch* [NullPointerException] e
            (info "Exception while shuting down agents" e))))
 
-(ann show [-> nil])
 (defn show [] (pprint (settings/urls)))
 
-(ann ^:no-check -main [Any -> Any])
 (defn -main
   [& args]
   (match args

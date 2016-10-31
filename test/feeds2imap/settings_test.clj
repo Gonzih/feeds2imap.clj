@@ -1,7 +1,14 @@
 (ns feeds2imap.settings-test
-  (:require [midje.sweet :refer :all]
-            [feeds2imap.settings :refer :all]
-            [feeds2imap.test-helpers :refer :all]))
+  (:require [feeds2imap.settings :refer :all]
+            [feeds2imap.test-helpers :refer [spec-fn]]
+            [clojure.spec :as s]
+            [clojure.spec.test :as stest]
+            [clojure.test :refer [deftest is]]))
 
-(fact "about types"
-      (check-ns-quiet 'feeds2imap.settings) => :ok)
+(deftest testing-specs
+  (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.settings)
+                      'feeds2imap.settings/urls
+                      'feeds2imap.settings/imap
+                      'feeds2imap.settings/unencrypted-imap
+                      'feeds2imap.settings/encrypted-imap)]
+    (is (spec-fn fname))))

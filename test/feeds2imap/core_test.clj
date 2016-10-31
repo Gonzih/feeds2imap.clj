@@ -1,7 +1,10 @@
 (ns feeds2imap.core-test
-  (:require [midje.sweet :refer :all]
-            [feeds2imap.core :refer :all]
-            [feeds2imap.test-helpers :refer :all]))
+  (:require [feeds2imap.core]
+            [feeds2imap.test-helpers :refer [spec-fn]]
+            [clojure.spec :as s]
+            [clojure.spec.test :as stest]
+            [clojure.test :refer [deftest is]]))
 
-(fact "about types"
-      (check-ns-quiet 'feeds2imap.core) => :ok)
+(deftest testing-specs
+  (doseq [fname (stest/enumerate-namespace 'feeds2imap.core)]
+    (is (spec-fn fname))))

@@ -1,34 +1,46 @@
 (ns feeds2imap.folder
   (:require [feeds2imap.logging :refer [info error]]
-            [clojure.core.typed :refer [non-nil-return ann U Seqable Map Keyword Any]]
-            [feeds2imap.annotations :refer :all])
+            [clojure.spec :as s])
   (:import  [javax.mail Store Folder Message]
             [javax.mail.internet MimeMessage]))
 
-(non-nil-return javax.mail.Store/getFolder :all)
-(non-nil-return javax.mail.Folder/exists :all)
-(non-nil-return javax.mail.Folder/create :all)
+(s/def ::folder (partial instance? Folder))
+(s/def ::store (partial instance? Store))
 
-(ann get-folder [Store String -> Folder])
+(s/fdef get-folder
+        :args (s/cat :store ::store :folder-str :feeds2imap.types/string)
+        :ret ::folder)
+
 (defn ^Folder get-folder [^Store store ^String folder]
   (.getFolder store folder))
 
-(ann exists [Store String -> Boolean])
+(s/fdef exists
+        :args (s/cat :store ::store :folder ::folder)
+        :ret :feeds2imap.types/boolean)
+
 (defn exists [^Store store folder]
   (.exists (get-folder store folder)))
 
-(ann create [Store String -> (U Boolean nil)])
+(s/fdef create
+        :args (s/cat :store ::store :folder ::folder)
+        :ret :feeds2imap.types/boolean)
+
 (defn create [^Store store folder]
   (when-not (exists store folder)
     (info "Creating IMAP folder" folder)
     (.create (get-folder store folder) Folder/HOLDS_MESSAGES)))
 
-(ann ^:no-check append [Store String (Seqable MimeMessage) -> nil])
+(s/fdef append
+        :args (s/cat :store ::store :folder ::folder :messages :feeds2imap.types/mime-messages)
+        :ret nil?)
+
 (defn append [store folder messages]
   (.appendMessages (get-folder store folder)
                    (into-array Message messages)))
 
-(ann ^:no-check append-emails [Store (Map Keyword (Seqable MimeMessage)) -> Any])
+(s/fdef append-emails
+        :args (s/cat :store ::store :emails (s/map-of :feeds2imap.types/keyword :feeds2imap.types/message)))
+
 (defn append-emails [store emails]
   (doall
    (pmap (fn [[folder emails]]
