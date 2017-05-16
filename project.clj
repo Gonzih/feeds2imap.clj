@@ -1,8 +1,8 @@
 (defproject feeds2imap "0.3.4-SNAPSHOT"
   :description "Pull RSS/Atom feeds to your IMAP folders with Clojure on JVM."
   :url "https://github.com/Gonzih/feeds2imap.clj"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "The MIT License"
+            :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
                  [javax.mail/mail "1.4.7"]
                  [org.clojars.scsibug/feedparser-clj "0.4.0" :exclusions [org.clojure/clojure]]
