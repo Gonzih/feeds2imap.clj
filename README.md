@@ -75,5 +75,6 @@ http://www.greghendershott.com/2013/05/feeds2gmail.html
 
 * [My Ruby prototype](https://github.com/Gonzih/feeds2imap.rb)
 * [My Clojure implementation](https://github.com/Gonzih/feeds2imap.clj)
+* [My Go implementation](https://github.com/Gonzih/feeds2imap-go)
 * [Racket implementation](https://github.com/greghendershott/feeds2gmail)
 * [Haskell implementation](https://github.com/cordawyn/rss2imap)
