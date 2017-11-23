@@ -3,9 +3,9 @@
   :url "https://github.com/Gonzih/feeds2imap.clj"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
+  :dependencies [[org.clojure/clojure "1.9.0-RC1"]
                  [javax.mail/mail "1.4.7"]
-                 [org.clojars.scsibug/feedparser-clj "0.4.0" :exclusions [org.clojure/clojure]]
+                 [org.clojars.gnzh/feedparser-clj "0.6.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.codec "0.1.0"]
                  [hiccup "1.0.5"]
                  [digest "1.4.5"]

@@ -85,7 +85,7 @@
   "Format each author as
    \"Name <name[at]example.com> http://example.com/\".
    Multiple authors are coma-separated"
-  [{:keys [authors] :as item}]
+  [{:keys [author authors] :as item}]
   (letfn [(format-author [author]
             (let [{:keys [name email uri]} author
                   email (when email
@@ -93,7 +93,9 @@
                   fields (filter (complement nil?)
                                  [name email uri])]
               (string/join " " fields)))]
-    (string/join ", " (map format-author authors))))
+    (if (seq authors)
+      (string/join ", " (map format-author authors))
+      author)))
 
 (s/fdef uniq-identifier
         :args (s/cat :item :feeds2imap.types/item)
