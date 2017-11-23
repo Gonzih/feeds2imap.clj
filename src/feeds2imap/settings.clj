@@ -1,8 +1,8 @@
 (ns feeds2imap.settings
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.spec :as s]
-            [clojure.spec.test :as stest]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
             [feeds2imap.types]
             [feeds2imap.gpg :refer [gpg]]
             [feeds2imap.logging :refer [info error]]

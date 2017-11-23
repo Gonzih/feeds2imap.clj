@@ -1,6 +1,6 @@
 (ns feeds2imap.opml
   (:require [clojure.pprint :refer [pprint]]
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [clojure.xml]
             [clojure.java.io :refer [file writer]])
   (:import  [java.io File]))

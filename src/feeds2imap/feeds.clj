@@ -9,7 +9,7 @@
             [feeds2imap.macro :refer :all]
             [digest :refer [md5]]
             [clojure.string :as string]
-            [clojure.spec :as s])
+            [clojure.spec.alpha :as s])
   (:import  [java.lang IllegalArgumentException]
             [java.security MessageDigest]
             [java.net NoRouteToHostException ConnectException UnknownHostException HttpURLConnection URL]

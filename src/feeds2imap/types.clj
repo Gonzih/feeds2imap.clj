@@ -1,6 +1,6 @@
 (ns feeds2imap.types
-  (:require [clojure.spec :as s]
-            [clojure.spec.gen :as gen])
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen])
   (:import [javax.mail.internet MimeMessage]
            [javax.mail Session]
            [java.util Date]))

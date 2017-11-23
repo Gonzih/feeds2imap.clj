@@ -10,7 +10,7 @@
             [feeds2imap.logging :as logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
             [clojure.core.match :refer [match]]
-            [clojure.spec :as s])
+            [clojure.spec.alpha :as s])
   (:import [java.net NoRouteToHostException UnknownHostException]
            [javax.mail MessagingException]
            [java.io File]

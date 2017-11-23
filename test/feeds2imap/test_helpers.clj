@@ -1,6 +1,6 @@
 (ns feeds2imap.test-helpers
   (:require  [clojure.test :as t]
-             [clojure.spec.test :as stest]))
+             [clojure.spec.test.alpha :as stest]))
 
 (defn read-num-tests-from-env []
   (if-let [s (System/getenv "NUM_TESTS")]

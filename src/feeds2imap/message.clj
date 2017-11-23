@@ -1,5 +1,5 @@
 (ns feeds2imap.message
-  (:require [clojure.spec :as s])
+  (:require [clojure.spec.alpha :as s])
   (:import [javax.mail Message$RecipientType Session]
            [javax.mail.internet MimeMessage InternetAddress MimeBodyPart]
            [java.util Date]))

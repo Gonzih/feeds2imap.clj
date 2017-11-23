@@ -1,6 +1,6 @@
 (ns feeds2imap.gpg
   (:require [clojure.java.shell :as shell]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as s]))
 
 (def gpg-program "gpg")
 

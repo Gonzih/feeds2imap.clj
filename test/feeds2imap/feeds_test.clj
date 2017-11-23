@@ -1,8 +1,8 @@
 (ns feeds2imap.feeds-test
   (:require [feeds2imap.feeds :refer :all]
             [feeds2imap.test-helpers :refer [spec-fn]]
-            [clojure.spec :as s]
-            [clojure.spec.test :as stest]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
             [clojure.test :refer [deftest is]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
