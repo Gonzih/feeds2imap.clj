@@ -95,7 +95,7 @@
               (string/join " " fields)))]
     (if (seq authors)
       (string/join ", " (map format-author authors))
-      author)))
+      (str author))))
 
 (s/fdef uniq-identifier
         :args (s/cat :item :feeds2imap.types/item)
