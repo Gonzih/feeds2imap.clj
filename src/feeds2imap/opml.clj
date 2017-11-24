@@ -61,7 +61,7 @@
        convert-opml
        pprint))
 
-(defn convert-and-write-to-file! [from to]
+(defn convert-and-write->file! [from to]
   (let [sink (writer (file to))
         data (convert-opml (file from))]
     (pprint data sink)))

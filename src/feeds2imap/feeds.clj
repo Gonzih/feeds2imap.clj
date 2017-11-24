@@ -176,17 +176,17 @@
                      [:tr [:td content]]]])]
     {:from from+ :to to :date pubdate :subject title :html html}))
 
-(s/fdef items-to-emails
+(s/fdef items->emails
         :args (s/cat :session :feeds2imap.types/mail-session
                      :from :feeds2imap.types/string
                      :to :feeds2imap.types/string
                      :item :feeds2imap.types/item)
         :ret :feeds2imap.types/mime-message)
 
-(defn items-to-emails [session from to item]
+(defn items->emails [session from to item]
   (message/from-map session (to-email-map from to item)))
 
-(s/fdef items-to-emails
+(s/fdef items->emails
         :args (s/cat :session :feeds2imap.types/mail-session
                      :from :feeds2imap.types/string
                      :to :feeds2imap.types/string
@@ -196,7 +196,7 @@
 (defn to-emails
   "Convert items to Messages."
   [session from to items]
-  (map-items (partial items-to-emails session from to) items))
+  (map-items (partial items->emails session from to) items))
 
 (s/fdef set-entries-authors
         :args (s/cat :feed :feeds2imap.types/parsed-feed)

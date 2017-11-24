@@ -10,7 +10,7 @@
 
 (deftest testing-specs-no-sideffects
   (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.feeds)
-                      `parse `fetch `items-to-emails `new-items)]
+                      `parse `fetch `items->emails `new-items)]
     (is (spec-fn fname))))
 
 (deftest testing-specs-with-sideffects

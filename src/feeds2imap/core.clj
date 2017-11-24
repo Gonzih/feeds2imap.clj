@@ -92,7 +92,7 @@
     (["imap" "decrypt"]   :seq) (settings/decrypt-imap!)
     (["opml2clj" file]    :seq) (ompl/convert-and-print-from-file! file)
     (["add" folder url]   :seq) (do (add folder url) (show))
-    (["opml2clj" from to] :seq) (ompl/convert-and-write-to-file! from to)
+    (["opml2clj" from to] :seq) (ompl/convert-and-write->file! from to)
     :else (error "Can't handle arguments" args))
   (logging/wait)
   (shutdown-agents-with-try))
