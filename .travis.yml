@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 language: clojure
-script: env LEIN_JVM_OPTS="-Xms512m -Xmx2024m" NUM_TESTS=30 lein with-profile dev trampoline test
+script: env FEEDS2IMAP_HOME=/tmp/ LEIN_JVM_OPTS="-Xms512m -Xmx2024m" NUM_TESTS=30 lein with-profile dev trampoline test
