@@ -7,6 +7,7 @@
             [feeds2imap.folder :as folder]
             [feeds2imap.macro :refer :all]
             [feeds2imap.opml :as ompl]
+            [feeds2imap.db :as db]
             [feeds2imap.logging :as logging :refer [info error]]
             [clojure.pprint :refer [pprint]]
             [clojure.core.match :refer [match]]
@@ -20,28 +21,27 @@
 
 (defn pull []
   (try*
-   (let [{:keys [username password host port to from]} (settings/imap)
-         cache         (settings/read-items)
-         _             (info "Found" (count cache) "items in cache.")
-         urls          (settings/urls)
-         _             (info "Found" (count urls) "folders in urls.")
-         {:keys [new-items cache]} (feeds/new-items cache urls)
-         _             (info "Found" (count new-items)
+    (db/init-db!)
+    (let [{:keys [username password host port to from]} (settings/imap)
+          urls         (settings/urls)
+          _            (info "Found" (count urls) "folders in urls.")
+          new-items    (feeds/new-items urls)
+          _            (info "Found" (count new-items)
                              "folder(s) with" (->> new-items (map second) flatten count)
                              "new item(s) in total.")
-         imap-session  (imap/get-session (imap/get-props) nil)
-         imap-store    (imap/get-store imap-session)
-         emails        (feeds/to-emails imap-session from to new-items)]
-     (when-not (empty? new-items)
-       (with-open [store imap-store]
-         (info "Connecting to imap host.")
-         (imap/connect store host port username password)
-         (info "Appending emails.")
-         (folder/append-emails store emails)
-         (info "Updating cache.")
-         (settings/write-items cache))))
-   (catch* [UnknownHostException NoRouteToHostException MessagingException] e
-           (info "Exception in pull" e))))
+          imap-session (imap/get-session (imap/get-props) nil)
+          imap-store   (imap/get-store imap-session)
+          emails       (feeds/to-emails imap-session from to new-items)]
+      (when-not (empty? new-items)
+        (with-open [store imap-store]
+          (info "Connecting to imap host.")
+          (imap/connect store host port username password)
+          (info "Appending emails.")
+          (folder/append-emails store emails)
+          (info "Updating cache.")
+          (db/update-cache! (feeds/extract-guids new-items)))))
+    (catch* [UnknownHostException NoRouteToHostException MessagingException] e
+            (info "Exception in pull" e))))
 
 (defn sleep [ms]
   (Thread/sleep ms))

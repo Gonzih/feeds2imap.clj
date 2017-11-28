@@ -1,12 +1,19 @@
 (ns feeds2imap.feeds-test
   (:require [feeds2imap.feeds :refer :all]
             [feeds2imap.test-helpers :refer [spec-fn]]
+            [feeds2imap.db :as db]
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
-            [clojure.test :refer [deftest is]]
+            [clojure.test :refer [deftest is use-fixtures]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.test.check.clojure-test :refer [defspec]]))
+
+(defn db-fixture [f]
+  (db/init-db!)
+  (f))
+
+(use-fixtures :once db-fixture)
 
 (deftest testing-specs-no-sideffects
   (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.feeds)
@@ -19,25 +26,12 @@
       (doseq [fname [`parse `parse `new-items]]
         (is (spec-fn fname))))))
 
-(deftest reduce-new-items-test
+(deftest filter-new-items-test
   (with-redefs [digest/md5 identity]
-    (is (= (:new-items (reduce-new-items {"a" 1 "b" 2}
-                                         {:b [{:uri "c"}]
-                                          :a [{:uri "b"} {:uri "z"}]}))
-           {:b [{:uri "c"}] :a [{:uri "z"}]}))
-    (is (= (set (keys (:cache (reduce-new-items {"a" 1 "b" 2}
-                                                {:b [{:uri "c"} {:uri "d"}]
-                                                 :a [{:uri "b"} {:uri "z"}]}))))
-           #{"a" "b" "c" "d" "z"}))
-    (let [{:keys [cache new-items]}
-          (reduce-new-items {} {:b [{:uri "http://b.com"} {:uri "https://b.com"}]
-                                :a [{:uri "http://a.com"} {:uri "https://a.com"}]})]
-      (is (= 2 (count cache)))
-      (is (= 1 (count (:a new-items))))
-      (is (= 1 (count (:b new-items)))))
-
-    (is (new? #{"https://abc"} {:uri "https://cba"}))
-    (is (not (new? #{"https://abc"} {:uri "https://abc"})))))
+    (is (= (filter-new-items {:b [{:uri "c"}]
+                              :a [{:uri "b"} {:uri "z"}]})
+           {:b [{:uri "c"}]
+            :a [{:uri "b"} {:uri "z"}]}))))
 
 (deftest pmap-test
   (let [run (partial into {})]
@@ -67,10 +61,3 @@
   (let [item {:uri nil :url nil :link nil :authors [{:name "authors"}]}]
     (is (= "authors" (uniq-identifier item))))
   (is (= "https://a.com" (uniq-identifier {:uri "http://a.com"}))))
-
-(defspec new?-spec
-  1000
-  (prop/for-all [cache (gen/map gen/string-alpha-numeric gen/pos-int)
-                 item gen/string-alpha-numeric]
-                (= (new? cache item)
-                   (not (contains? cache (md5-identifier item))))))

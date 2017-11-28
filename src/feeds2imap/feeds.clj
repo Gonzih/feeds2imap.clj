@@ -7,6 +7,7 @@
             [feeds2imap.types]
             [feeds2imap.logging :refer [info error]]
             [feeds2imap.macro :refer :all]
+            [feeds2imap.db :refer [is-new?]]
             [digest :refer [md5]]
             [clojure.string :as string]
             [clojure.spec.alpha :as s])
@@ -117,13 +118,13 @@
   (-> item uniq-identifier md5))
 
 (s/fdef new?
-        :args (s/cat :cache :feeds2imap.types/cache :item :feeds2imap.types/item)
+        :args (s/cat :item :feeds2imap.types/item)
         :ret :feeds2imap.types/boolean)
 
 (defn new?
   "Looks up item in the cache"
-  [cache item]
-  (not (contains? cache (md5-identifier item))))
+  [item]
+  (is-new? (md5-identifier item)))
 
 (s/fdef item-content
         :args (s/cat :item :feeds2imap.types/item)
@@ -246,34 +247,32 @@
                        IOException] e (parse-try url (inc n-try) e)))))]
     (parse-try url)))
 
-(s/fdef reduce-new-items
-        :args (s/cat :cache :feeds2imap.types/cache
-                     :parsed-feeds :feeds2imap.types/folder-of-items)
-        :ret (s/keys :req-un [::new-items :feeds2imap.types/cache]))
+(s/fdef filter-new-items
+        :args (s/cat :parsed-feeds :feeds2imap.types/folder-of-items)
+        :ret ::new-items)
 
-(defn reduce-new-items [cache parsed-feeds]
-  (reduce (fn [accumulator [folder items]]
-            (reduce (fn [{cache-inner :cache :as accumulator-inner} item]
-                      (if (new? cache-inner item)
-                        (let [md5-hash (md5-identifier item)
-                              ts (System/currentTimeMillis)]
-                          (-> accumulator-inner
-                              (update-in [:cache]            (fn [new-cache] (assoc new-cache md5-hash ts)))
-                              (update-in [:new-items folder] (fn [new-items] (conj new-items item)))))
-                        accumulator-inner))
-                    accumulator
-                    items))
-          {:cache cache :new-items {}}
-          parsed-feeds))
+(defn filter-new-items [parsed-feeds]
+  (->> parsed-feeds
+       (map (fn [[folder items]]
+              [folder (filter new? items)]))
+       (into {})))
 
 (s/fdef new-items
-        :args (s/cat :cache :feeds2imap.types/cache
-                     :urls :feeds2imap.types/folder-of-urls)
-        :ret (s/keys :req-un [::new-items :feeds2imap.types/cache]))
+        :args (s/cat :urls :feeds2imap.types/folder-of-urls)
+        :ret ::new-items)
 
-(defn new-items [cache urls]
+(defn new-items [urls]
   (->> urls
        (pmap-items parse)
        (map-items :entries)
        flatten-items
-       (reduce-new-items cache)))
+       (filter-new-items)))
+
+(s/fdef extract-guids
+        :args (s/cat :items ::new-items)
+        :ret (s/coll-of :feeds2imap.types/string))
+
+(defn extract-guids [items]
+  (->> items
+       vals
+       (map md5-identifier)))

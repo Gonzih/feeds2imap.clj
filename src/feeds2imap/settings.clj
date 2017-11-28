@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
-            [feeds2imap.types]
+            [feeds2imap.types :refer [valid-or-explain]]
             [feeds2imap.gpg :refer [gpg]]
             [feeds2imap.logging :refer [info error]]
             [clojure.pprint :refer [pprint]])
@@ -77,34 +77,6 @@
   (bootstrap-config-dir)
   (bootstrap-file (str (config-dir) path) data :force true))
 
-(s/fdef read-items
-        :args (s/cat)
-        :ret :feeds2imap.types/cache)
-
-(defn read-items []
-  {:post [(s/valid? :feeds2imap.types/cache %)]}
-  (read-or-create-file "read-items.clj" (hash-map)))
-
-(defn clean-up-items [data]
-  (info "Cleaning up cache of" (count data) "items.")
-  (let [current-millis (System/currentTimeMillis)
-                  ;  365 days
-        threshold (* 365 24 60 60 1000)]
-    (->> data
-         (filter (fn [[checksum t]]
-                   (< (- current-millis t)
-                      threshold)))
-         (into {}))))
-
-(s/fdef write-items
-        :args (s/cat :data :feeds2imap.types/cache))
-
-(defn write-items [data]
-  {:pre [(s/valid? :feeds2imap.types/cache data)]}
-  (let [clean-data (clean-up-items data)]
-    (info "Writing" (count clean-data) "items to cache.")
-    (write-file "read-items.clj" clean-data)))
-
 (s/fdef encrypted-imap
         :args (s/cat)
         :ret (s/nilable :feeds2imap.types/imap-configuration))
@@ -124,8 +96,7 @@
         :ret :feeds2imap.types/imap-configuration)
 
 (defn imap []
-  {:post [(or (s/valid? :feeds2imap.types/imap-configuration %)
-              (s/explain :feeds2imap.types/imap-configuration %))]}
+  {:post [(valid-or-explain :feeds2imap.types/imap-configuration %)]}
   (or (encrypted-imap)
       (unencrypted-imap)))
 
@@ -197,10 +168,12 @@
 
 (defn urls
   ([]
-   {:post [(s/valid? :feeds2imap.types/folder-of-urls %)]}
+   {:post [(valid-or-explain :feeds2imap.types/folder-of-urls %)]}
    (read-or-create-file "urls.clj" (hash-map)))
 
   ([data]
-   {:pre  [(or (s/valid? :feeds2imap.types/folder-of-urls data)
-               (s/valid? map? data))]}
+   {:pre  [(or (valid-or-explain :feeds2imap.types/folder-of-urls data)
+               (valid-or-explain map? data))]}
    (write-file "urls.clj" (with-out-str (pprint data)))))
+
+(defn db-path [] (str (config-dir) "cache.sqlite3"))

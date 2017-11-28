@@ -85,3 +85,10 @@
 (s/def ::folder-of-urls  (s/map-of ::keyword ::urls))
 (s/def ::folder-of-items (s/map-of ::keyword ::items))
 (s/def ::folder-of-unflattened-items (s/map-of ::keyword ::unflattened-items))
+
+(defn valid-or-explain [spec item]
+  (if (s/valid? spec item)
+    true
+    (do
+      (s/explain spec item)
+      false)))
