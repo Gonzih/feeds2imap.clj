@@ -39,13 +39,16 @@
                    (into-array Message messages)))
 
 (s/fdef append-emails
-        :args (s/cat :store ::store :emails (s/map-of :feeds2imap.types/keyword :feeds2imap.types/message)))
+        :args (s/cat :store ::store :emails :feeds2imap.types/mime-messages-with-folder))
 
 (defn append-emails [store emails]
-  (doall
-   (pmap (fn [[folder emails]]
-           (let [folder-str (str "RSS/" (name folder))]
-             (create store folder-str)
-             (info "Appending" (count emails) "emails in to the IMAP folder" folder-str)
-             (append store folder-str emails)))
-         emails)))
+  (let [groupped (group-by :folder emails)]
+    (doall
+      (pmap
+        (fn [[folder emails]]
+          (let [folder-str (str "RSS/" (name folder))
+                msgs (map :mime-message emails)]
+            (create store folder-str)
+            (info "Appending" (count msgs) "emails in to the IMAP folder" folder-str)
+            (append store folder-str msgs)))
+        groupped))))

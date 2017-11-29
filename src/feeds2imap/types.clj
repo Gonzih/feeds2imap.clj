@@ -33,18 +33,24 @@
 (s/def ::published-date ::date)
 (s/def ::updated-date ::date)
 
-(s/def ::item (s/keys :req-un [::authors ::title ::link ::contents ::description]
+
+(s/def ::folder ::keyword)
+(s/def ::item (s/keys :req-un [::authors ::title ::link ::contents ::description ::folder]
                       :opt-un [::published-date ::updated-date]))
+
+(s/def ::item-with-folder-coll (s/coll-of ::item-with-folder))
 
 (s/def ::items (s/coll-of ::item))
 (s/def ::entries ::items)
 (s/def ::unflattened-items (s/coll-of ::items))
 
-(s/def ::parsed-feed (s/keys :req-un [::entries]))
+(s/def ::parsed-feed (s/keys :req-un [::entries ::folder]))
 (s/def ::parsed-feeds (s/map-of ::keyword (s/* ::parsed-feed)))
 
 (s/def ::mime-message (partial instance? MimeMessage))
 (s/def ::mime-messages (s/coll-of ::message))
+(s/def ::mime-message-with-folder (s/keys :req-un [::mime-message ::folder]))
+(s/def ::mime-messages-with-folder (s/coll-of ::mime-message-with-folder))
 
 (s/def ::mail-session (partial instance? Session))
 
@@ -59,7 +65,7 @@
 (s/def ::username ::string)
 (s/def ::password ::string)
 
-(s/def ::message (s/keys :req-un [::from ::to ::subject ::html]
+(s/def ::message (s/keys :req-un [::from ::to ::subject ::html ::folder]
                          :opt-un [::date]))
 
 
@@ -83,7 +89,8 @@
   (s/spec string? :gen url-gen))
 
 (s/def ::folder-of-urls  (s/map-of ::keyword ::urls))
-(s/def ::folder-of-items (s/map-of ::keyword ::items))
+(s/def ::folder-and-url (s/keys :req-un [::folder ::url]))
+(s/def ::folder-and-url-coll (s/coll-of ::folder-and-url))
 (s/def ::folder-of-unflattened-items (s/map-of ::keyword ::unflattened-items))
 
 (defn valid-or-explain [spec item]

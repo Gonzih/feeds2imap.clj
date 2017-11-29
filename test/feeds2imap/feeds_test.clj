@@ -28,31 +28,12 @@
 
 (deftest filter-new-items-test
   (with-redefs [digest/md5 identity]
-    (is (= (filter-new-items {:b [{:uri "c"}]
-                              :a [{:uri "b"} {:uri "z"}]})
-           {:b [{:uri "c"}]
-            :a [{:uri "b"} {:uri "z"}]}))))
-
-(deftest pmap-test
-  (let [run (partial into {})]
-    (let [urls {:a [{:uri "a"} {:uri "b"}]
-                :b [{:uri "c"} {:uri "d"}]}
-          map-result {:a ["a" "b"]
-                      :b ["c" "d"]}]
-      (is (= (run (map-items :uri urls)) map-result))
-      (is (= (run (pmap-items :uri urls)))) map-result)
-
-    (let [urls {:a [{:uri "a"} {:uri nil}]
-                :b [{:uri nil} {:uri "d"}]}
-          filter-result {:a [{:uri "a"}]
-                         :b [{:uri "d"}]}]
-      (is (= (run (filter-items :uri urls)) filter-result)))
-
-    (let [urls {:a [[{:uri "a"}] [{:uri "b"}]]
-                :b [[{:uri "c"} {:uri "d"}]]}
-          flatten-result {:a [{:uri "a"} {:uri "b"}]
-                          :b [{:uri "c"} {:uri "d"}]}]
-      (is (= (run (flatten-items urls)) flatten-result)))))
+    (is (= (filter-new-items [{:uri "c" :folder "c"}
+                              {:uri "b" :folder "b"}
+                              {:uri "z" :folder "z"}])
+           [{:uri "c" :folder "c"}
+            {:uri "b" :folder "b"}
+            {:uri "z" :folder "z"}]))))
 
 (deftest uniq-identifier-test
   (is (= "uri" (uniq-identifier {:uri "uri" :url "url" :link "link"})))

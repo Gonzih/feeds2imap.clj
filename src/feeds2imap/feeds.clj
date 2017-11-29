@@ -19,65 +19,6 @@
             [com.sun.syndication.io ParsingFeedException]
             [java.util Date]))
 
-(s/def ::new-items :feeds2imap.types/folder-of-items)
-
-(s/def ::map-fn (s/fspec
-                 :args (s/cat :item :feeds2imap.types/item)
-                 :ret  :feeds2imap.types/item))
-
-(s/def ::filter-fn (s/fspec
-                    :args (s/cat :item :feeds2imap.types/item)
-                    :ret :feeds2imap.types/boolean))
-
-(s/fdef map-items
-        :args (s/cat :fun ::map-fn
-                     :items :feeds2imap.types/folder-of-items)
-        :ret :feeds2imap.types/folder-of-items)
-
-(defn map-items
-  "Map function over items for each folder."
-  [fun coll]
-  (->> coll
-       (map (fn [[folder items]] [folder (map fun items)]))
-       (into {})))
-
-(s/fdef pmap-items
-        :args (s/cat :fun ::map-fn
-                     :items :feeds2imap.types/folder-of-items)
-        :ret :feeds2imap.types/folder-of-items)
-
-(defn pmap-items
-  "Map function over items for each folder using pmap."
-  [fun coll]
-  (->> coll
-       (pmap (fn [[folder items]] [folder (pmap fun items)]))
-       (into {})))
-
-(s/fdef filter-items
-        :args (s/cat :fun ::filter-fn
-                     :items :feeds2imap.types/folder-of-items)
-        :ret :feeds2imap.types/folder-of-items)
-
-(defn filter-items
-  "Filter items for each folder.
-   Filter folders with non empty items collection."
-  [fun coll]
-  (->> coll
-       (map (fn [[folder items]]
-              [folder (filter fun items)]))
-       (filter (fn [[folder items]]
-                 (seq items)))
-       (into {})))
-
-(s/fdef flatten-items
-        :args (s/cat :items :feeds2imap.types/folder-of-unflattened-items)
-        :ret :feeds2imap.types/folder-of-items)
-
-(defn flatten-items [items]
-  (->> items
-       (map (fn [[folder items]] [folder (flatten items)]))
-       (into {})))
-
 (s/fdef item-authors
         :args (s/cat :item :feeds2imap.types/item)
         :ret :feeds2imap.types/string)
@@ -158,11 +99,11 @@
 (defn escape-title [title]
   (string/replace title #"/\r?\n|\r/" " "))
 
-(s/fdef to-email-map
+(s/fdef ->email-map
         :args (s/cat :from :feeds2imap.types/string :to :feeds2imap.types/string :item :feeds2imap.types/item)
         :ret :feeds2imap.types/message)
 
-(defn to-email-map
+(defn ->email-map
   "Convert item to map for Message construction."
   [from to item]
   (let [{:keys [title link]} item
@@ -184,20 +125,17 @@
                      :item :feeds2imap.types/item)
         :ret :feeds2imap.types/mime-message)
 
-(defn items->emails [session from to item]
-  (message/from-map session (to-email-map from to item)))
+(defn item->email [session from to item]
+  (message/from-map session (->email-map from to item)))
 
-(s/fdef items->emails
-        :args (s/cat :session :feeds2imap.types/mail-session
-                     :from :feeds2imap.types/string
-                     :to :feeds2imap.types/string
-                     :items (s/map-of :feeds2imap.types/keyword :feeds2imap.types/item))
-        :ret :feeds2imap.types/mime-message)
 
-(defn to-emails
+(defn ->emails
   "Convert items to Messages."
   [session from to items]
-  (map-items (partial items->emails session from to) items))
+  (map (fn [{:keys [folder] :as item}]
+         {:mime-message (item->email session from to item)
+          :folder folder})
+       items))
 
 (s/fdef set-entries-authors
         :args (s/cat :feed :feeds2imap.types/parsed-feed)
@@ -226,7 +164,7 @@
         :args (s/cat :url :feeds2imap.types/url)
         :ret :feeds2imap.types/parsed-feed)
 
-(defn parse [url]
+(defn parse [{:keys [url folder]}]
   (letfn [(log-try [url n-try reason]
             (if (> n-try 1)
               (error "Fetching" url "try" n-try "reason is" reason)
@@ -245,34 +183,43 @@
                        ParsingFeedException
                        IllegalArgumentException
                        IOException] e (parse-try url (inc n-try) e)))))]
-    (parse-try url)))
+    (assoc
+      (parse-try url)
+      :folder folder)))
 
 (s/fdef filter-new-items
-        :args (s/cat :parsed-feeds :feeds2imap.types/folder-of-items)
-        :ret ::new-items)
+        :args (s/cat :parsed-feeds :feeds2imap.types/items)
+        :ret :feeds2imap.types/items)
 
 (defn filter-new-items [parsed-feeds]
   (->> parsed-feeds
-       (map (fn [[folder items]]
-              [folder (filter new? items)]))
-       (into {})))
+       (filter new?)))
+
+(s/fdef flatten-urls
+        :args (s/cat :urls :feeds2imap.types/folder-of-urls)
+        :ret :feeds2imap.types/folder-and-url-coll)
+
+(defn flatten-urls [urls]
+  (->> urls
+       (map (fn [[folder urls]] (map (fn [url] {:folder folder :url url}) urls)))
+       flatten))
 
 (s/fdef new-items
         :args (s/cat :urls :feeds2imap.types/folder-of-urls)
-        :ret ::new-items)
+        :ret :feeds2imap.types/items)
 
 (defn new-items [urls]
   (->> urls
-       (pmap-items parse)
-       (map-items :entries)
-       flatten-items
-       (filter-new-items)))
+       flatten-urls
+       (map parse)
+       (map (fn [{:keys [entries folder]}]
+              (map (fn [entry] (assoc entry :folder folder)) entries)))
+       flatten
+       filter-new-items))
 
 (s/fdef extract-guids
-        :args (s/cat :items ::new-items)
+        :args (s/cat :items :feeds2imap.types/items)
         :ret (s/coll-of :feeds2imap.types/string))
 
 (defn extract-guids [items]
-  (->> items
-       vals
-       (map md5-identifier)))
+  (map md5-identifier items))

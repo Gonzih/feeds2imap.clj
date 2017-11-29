@@ -27,11 +27,10 @@
           _            (info "Found" (count urls) "folders in urls.")
           new-items    (feeds/new-items urls)
           _            (info "Found" (count new-items)
-                             "folder(s) with" (->> new-items (map second) flatten count)
                              "new item(s) in total.")
           imap-session (imap/get-session (imap/get-props) nil)
           imap-store   (imap/get-store imap-session)
-          emails       (feeds/to-emails imap-session from to new-items)]
+          emails       (feeds/->emails imap-session from to new-items)]
       (when-not (empty? new-items)
         (with-open [store imap-store]
           (info "Connecting to imap host.")

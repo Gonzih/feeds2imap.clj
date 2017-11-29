@@ -19,7 +19,5 @@
       seq not))
 
 (defn update-cache! [guids]
-  (apply jdbc/insert!
-         (db-spec)
-         :feeds
-         (map (fn [guid] {:guid guid}) guids)))
+  (jdbc/insert-multi! (db-spec) :feeds
+                      (map (fn [guid] {:guid guid}) guids)))
