@@ -2,6 +2,7 @@
   (:require [feeds2imap.feeds :refer :all]
             [feeds2imap.test-helpers :refer [spec-fn]]
             [feeds2imap.db :as db]
+            [feeds2imap.logging]
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
             [clojure.test :refer [deftest is use-fixtures]]
@@ -17,13 +18,14 @@
 
 (deftest testing-specs-no-sideffects
   (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.feeds)
-                      `parse `fetch `items->emails `new-items)]
+                      `parse `fetch `new-items)]
     (is (spec-fn fname))))
 
 (deftest testing-specs-with-sideffects
-  (let [parse-memo (memoize feeds2imap.feeds/parse)]
-    (with-redefs [feeds2imap.feeds/parse parse-memo]
-      (doseq [fname [`parse `parse `new-items]]
+  (let [fetch-memo (memoize feeds2imap.feeds/fetch)]
+    (with-redefs [feeds2imap.feeds/fetch fetch-memo
+                  feeds2imap.logging/enabled? false]
+      (doseq [fname [`parse `new-items]]
         (is (spec-fn fname))))))
 
 (deftest filter-new-items-test

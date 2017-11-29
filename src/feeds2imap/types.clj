@@ -44,7 +44,7 @@
 (s/def ::entries ::items)
 (s/def ::unflattened-items (s/coll-of ::items))
 
-(s/def ::parsed-feed (s/keys :req-un [::entries ::folder]))
+(s/def ::parsed-feed (s/keys :req-un [::entries]))
 (s/def ::parsed-feeds (s/map-of ::keyword (s/* ::parsed-feed)))
 
 (s/def ::mime-message (partial instance? MimeMessage))
@@ -65,7 +65,7 @@
 (s/def ::username ::string)
 (s/def ::password ::string)
 
-(s/def ::message (s/keys :req-un [::from ::to ::subject ::html ::folder]
+(s/def ::message (s/keys :req-un [::from ::to ::subject ::html]
                          :opt-un [::date]))
 
 
@@ -91,7 +91,6 @@
 (s/def ::folder-of-urls  (s/map-of ::keyword ::urls))
 (s/def ::folder-and-url (s/keys :req-un [::folder ::url]))
 (s/def ::folder-and-url-coll (s/coll-of ::folder-and-url))
-(s/def ::folder-of-unflattened-items (s/map-of ::keyword ::unflattened-items))
 
 (defn valid-or-explain [spec item]
   (if (s/valid? spec item)

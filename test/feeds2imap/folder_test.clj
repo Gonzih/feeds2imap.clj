@@ -6,5 +6,6 @@
             [clojure.test :refer [deftest is]]))
 
 (deftest testing-specs
-  (doseq [fname (stest/enumerate-namespace 'feeds2imap.folder)]
+  (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.folder)
+                      `get-folder `create `append `append-emails `exists)]
     (is (spec-fn fname))))

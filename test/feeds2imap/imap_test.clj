@@ -6,5 +6,6 @@
             [clojure.test :refer [deftest is]]))
 
 (deftest testing-specs
-  (doseq [fname (stest/enumerate-namespace 'feeds2imap.imap)]
+  (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.imap)
+                      `connect `get-store `get-props)]
     (is (spec-fn fname))))

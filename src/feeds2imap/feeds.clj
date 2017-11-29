@@ -161,7 +161,7 @@
       set-entries-authors))
 
 (s/fdef parse
-        :args (s/cat :url :feeds2imap.types/url)
+        :args (s/cat :folder :feeds2imap.types/folder-and-url)
         :ret :feeds2imap.types/parsed-feed)
 
 (defn parse [{:keys [url folder]}]
@@ -183,9 +183,10 @@
                        ParsingFeedException
                        IllegalArgumentException
                        IOException] e (parse-try url (inc n-try) e)))))]
-    (assoc
+    (update
       (parse-try url)
-      :folder folder)))
+      :entries
+      (partial map #(assoc % :folder folder)))))
 
 (s/fdef filter-new-items
         :args (s/cat :parsed-feeds :feeds2imap.types/items)
@@ -212,8 +213,7 @@
   (->> urls
        flatten-urls
        (map parse)
-       (map (fn [{:keys [entries folder]}]
-              (map (fn [entry] (assoc entry :folder folder)) entries)))
+       :entries
        flatten
        filter-new-items))
 

@@ -6,5 +6,6 @@
             [clojure.test :refer [deftest is]]))
 
 (deftest testing-specs
-  (doseq [fname (stest/enumerate-namespace 'feeds2imap.message)]
+  (doseq [fname (disj (stest/enumerate-namespace 'feeds2imap.message)
+                      `recipient-type-to)]
     (is (spec-fn fname))))

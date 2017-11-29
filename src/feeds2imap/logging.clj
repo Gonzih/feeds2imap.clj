@@ -1,13 +1,16 @@
 (ns feeds2imap.logging)
 
+(def enabled? true)
 (def logger (agent nil))
 
 (defn prn-stdout [_ args]
-  (apply println args))
+  (when enabled?
+    (apply println args)))
 
 (defn prn-stderr [_ args]
-  (binding [*out* *err*]
-    (apply println args)))
+  (when enabled?
+    (binding [*out* *err*]
+      (apply println args))))
 
 (defn info [& args]
   (send logger prn-stdout args))
