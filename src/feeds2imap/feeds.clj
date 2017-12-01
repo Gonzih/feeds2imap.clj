@@ -165,26 +165,17 @@
         :ret :feeds2imap.types/parsed-feed)
 
 (defn parse [{:keys [url folder]}]
-  (letfn [(log-try [url n-try reason]
-            (if (> n-try 1)
-              (error "Fetching" url "try" n-try "reason is" reason)
-              (info  "Fetching" url)))
-          (parse-try
-            ([url] (parse-try url 1 :no-reason))
-            ([url n-try reason]
-             (log-try url n-try reason)
-             (try*
-              (if (< n-try 3)
-                (fetch url)
-                {:entries ()})
-              (catch* [ConnectException
-                       NoRouteToHostException
-                       UnknownHostException
-                       ParsingFeedException
-                       IllegalArgumentException
-                       IOException] e (parse-try url (inc n-try) e)))))]
+  (info  "Fetching" url)
+  (let [response (try*
+                   (fetch url)
+                   (catch* [ConnectException
+                            NoRouteToHostException
+                            UnknownHostException
+                            ParsingFeedException
+                            IllegalArgumentException
+                            IOException] e {:entries ()}))]
     (update
-      (parse-try url)
+      response
       :entries
       (partial map #(assoc % :folder folder)))))
 
