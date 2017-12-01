@@ -1,5 +1,6 @@
 (ns feeds2imap.folder
   (:require [feeds2imap.logging :refer [info error]]
+            [feeds2imap.types]
             [clojure.spec.alpha :as s])
   (:import  [javax.mail Store Folder Message]
             [javax.mail.internet MimeMessage]))

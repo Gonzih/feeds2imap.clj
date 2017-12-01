@@ -173,7 +173,10 @@
                             UnknownHostException
                             ParsingFeedException
                             IllegalArgumentException
-                            IOException] e {:entries ()}))]
+                            IOException] e
+                           (do
+                             (info "Caught exception" e "while fetching" url)
+                             {:entries []})))]
     (update
       response
       :entries
