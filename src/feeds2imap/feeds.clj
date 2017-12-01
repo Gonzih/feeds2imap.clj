@@ -207,7 +207,7 @@
   (->> urls
        flatten-urls
        (map parse)
-       :entries
+       (map :entries)
        flatten
        filter-new-items))
 
