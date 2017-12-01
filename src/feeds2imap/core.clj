@@ -31,7 +31,7 @@
           imap-session (imap/get-session (imap/get-props) nil)
           imap-store   (imap/get-store imap-session)
           emails       (feeds/->emails imap-session from to new-items)]
-      (when-not (empty? new-items)
+      (when (seq new-items)
         (with-open [store imap-store]
           (info "Connecting to imap host.")
           (imap/connect store host port username password)
