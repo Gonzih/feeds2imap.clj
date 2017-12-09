@@ -11,7 +11,7 @@
                  [digest "1.4.6"]
                  [org.clojure/core.match "0.2.2"]
                  [org.clojure/java.jdbc "0.7.3"]
-                 [org.xerial/sqlite-jdbc "3.21.0"]]
+                 [org.xerial/sqlite-jdbc "3.21.0.1"]]
   :main feeds2imap.core
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}
              :uberjar {:aot :all}}
