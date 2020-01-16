@@ -9,5 +9,9 @@ jobs:
       image: clojure:latest
     steps:
     - uses: actions/checkout@v1
-    - name: Build
-      run: lein cljsbuild once dev
+    - name: CI
+      run: lein with-profile dev trampoline test && lein uberjar
+      env:
+        FEEDS2IMAP_HOME: /tmp/
+        LEIN_JVM_OPTS: "-Xms512m -Xmx2024m"
+        NUM_TESTS: 30

@@ -1,9 +1,11 @@
-## feeds2imap.clj [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/Gonzih/feeds2imap.clj/blob/master/LICENSE.md) [![Build Status](https://travis-ci.org/Gonzih/feeds2imap.clj.svg?branch=master)](https://travis-ci.org/Gonzih/feeds2imap.clj) [![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj) [![Downloads](https://jarkeeper.com/Gonzih/feeds2imap/downloads.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
+## feeds2imap.clj
 
+[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/Gonzih/feeds2imap.clj/blob/master/LICENSE.md)
+[![Dependencies Status](http://jarkeeper.com/Gonzih/feeds2imap.clj/status.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
+[![Downloads](https://jarkeeper.com/Gonzih/feeds2imap/downloads.svg)](https://jarkeeper.com/Gonzih/feeds2imap.clj)
+![Build](https://github.com/Gonzih/glue/workflows/CI/badge.svg)
 [![Clojars Project](https://img.shields.io/clojars/v/feeds2imap.svg)](http://clojars.org/feeds2imap)
-
 [![Clojars Project](https://img.shields.io/clojars/v/lein-feeds2imap.svg)](http://clojars.org/lein-feeds2imap)
-
 ![clojure feeds reader](https://raw.githubusercontent.com/Gonzih/feeds2imap.clj/master/demo.gif)
 
 RSS/Atom reader implemented in Clojure.
