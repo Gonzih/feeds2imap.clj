@@ -19,5 +19,5 @@
       seq not))
 
 (defn update-cache! [guids]
-  (jdbc/insert-multi! (db-spec) :feeds
-                      (map (fn [guid] {:guid guid}) guids)))
+  (doseq [guid (distinct guids)]
+    (jdbc/execute! (db-spec) ["INSERT OR IGNORE INTO feeds (guid) VALUES (?)" guid])))
